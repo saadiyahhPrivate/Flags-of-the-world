@@ -22,15 +22,11 @@ Initial data:
 | rows       | 194   | 255     | 206     |
 | identifier | Name  | ADMIN   | Country |
 
-<img src="./s0.png" alt="s0" style="zoom:50%;" />
+<img src="./s0.png" alt="s0" width="30%" />
 
 1. Drop null ISO_A3 values from geodata, clean up country names
 
-<img src="./s1.png" alt="s1" style="zoom:50%;" />
-
-
-
-
+<img src="./s1.png" alt="s1" width="50%" />
 
 
 
