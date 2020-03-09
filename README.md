@@ -2,7 +2,7 @@
 
 ## Running the Visualization
 
-Open Terminal in the root directory and run `python3 -m http.server 5000`. Then navigate to http://localhost:5000
+Open Terminal in this directory and run `python3 -m http.server 5000`. Then navigate to http://localhost:5000
 
 ## Features
 
