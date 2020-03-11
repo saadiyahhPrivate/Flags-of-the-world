@@ -2,27 +2,74 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- <link rel="stylesheet" href="style.css"/> -->
+    <!-- Scripts -->
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://unpkg.com/topojson-simplify@3"></script>
+    <style>
+      #map {
+        background-color: #fff;
+        border: 1px solid #ccc;
+      }
+      .background {
+        fill: none;
+        pointer-events: all;
+      }
+
+      #countries{
+        fill: #cde;
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+
+      #noflagcountry{
+        fill: black;
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+
+      #misingbothcountry{
+        fill: red;
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+
+      #nodatacountry{
+        fill: green;
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+
+      #countries .active {
+        fill: #89a;
+      }
+
+      pre.prettyprint {
+        border: 1px solid #ccc;
+        margin-bottom: 0;
+        padding: 9.5px;
+      }
+    </style>
     <title>Flags of the World</title>
 </head>
 <body>
-    <div>
-        
-    </div>
+    <div id="map"></div>
+    <div id="countryname"></div>
 </body>
-<!-- Scripts -->
-<script src="static/d3.js"></script>
 <script>
     // Cache busting
-    document.write(
-        '<scr' + 'ipt src="static/main.js?cb=' + new Date().getTime() + '"></scr' + 'ipt>'
-    );
-
-    d3.json('data/merged_countries.geojson').then(function(data) {
-        console.log(data);
+    document.write('<scr' + 'ipt src="static/main.js?cb=' + new Date().getTime() + '"></scr' + 'ipt>');
+    d3.json('data/merged_countries_union_simplified.json', function(err, data) {
         createMap(data);
-    })
+    });
 
 </script>
 </html>
