@@ -5,64 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- <link rel="stylesheet" href="style.css"/> -->
     <!-- Scripts -->
-    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
     <script src="https://unpkg.com/topojson-simplify@3"></script>
-    <style>
-      #map {
-        background-color: #fff;
-        border: 1px solid #ccc;
-      }
-      .background {
-        fill: none;
-        pointer-events: all;
-      }
-
-      #countries{
-        fill: #cde;
-        stroke: #fff;
-        stroke-linejoin: round;
-        stroke-linecap: round;
-      }
-
-      #noflagcountry{
-        fill: black;
-        stroke: #fff;
-        stroke-linejoin: round;
-        stroke-linecap: round;
-      }
-
-      #misingbothcountry{
-        fill: red;
-        stroke: #fff;
-        stroke-linejoin: round;
-        stroke-linecap: round;
-      }
-
-      #nodatacountry{
-        fill: green;
-        stroke: #fff;
-        stroke-linejoin: round;
-        stroke-linecap: round;
-      }
-
-      #countries .active {
-        fill: #89a;
-      }
-
-      pre.prettyprint {
-        border: 1px solid #ccc;
-        margin-bottom: 0;
-        padding: 9.5px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles/styles.css">
     <title>Flags of the World</title>
 </head>
 <body>
-    <div id="map"></div>
+  <div class="row">
+  </div>
+  <div class="row">
+    <div class="columnleft">
+        <div id="map"></div>
+    </div>
+    <div class="columnright"></div>
+  </div>
+  <div class="row">
     <div id="countryname"></div>
+  </div>
 </body>
 <script>
     // Cache busting

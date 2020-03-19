@@ -1,13 +1,38 @@
-const width = 600,
-	    height = 400
-			scale0 = (width - 1) / 2 / Math.PI;
+var width  = d3.select('#map').node().getBoundingClientRect().width;
+var height = width * 0.6;
 
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
 	.attr('height', height);
 const countryName = d3.select('#countryname');
 
-function createMap(data) {
+function countrySelected()
+{
+	var d = d3.select(this);
+	if (d.classed('selected')) {
+			d.classed('selected', false);
+	} else {
+			d.classed('selected', true);
+	}
+	// TODO: drive visualization graphs to repaint on these events!
+};
+
+// this function is just for debugging purposes,
+// once we have all country data, this can be scrapped
+function checkProperty(d) {
+	if (d.properties.Name == null && d.properties.ImageURL == null) {
+		return "misingbothcountry";
+  } else if (d.properties.Name == null) {
+		return "nodatacountry";
+	} else if (d.properties.ImageURL == null) {
+		return "noflagcountry";
+	} else {
+		return "countries";
+	}
+};
+
+function createMap(data)
+{
     var projection = d3.geoMercator()
         .scale(300)
         .translate([width / 2, height / 1.5]);
@@ -15,13 +40,10 @@ function createMap(data) {
     var path = d3.geoPath()
   							 .projection(projection);
 
-		var zoom = d3.behavior.zoom()
-		.scaleExtent([0.3, 10])
+		var zoom = d3.zoom()
+		.scaleExtent([0.4, 10])
     .on("zoom",function() {
-        g.attr("transform","translate("+
-            d3.event.translate.join(",")+")scale("+d3.event.scale+")");
-        g.selectAll("path")
-            .attr("d", path.projection(projection));
+			g.attr('transform', d3.event.transform)
     });
 
 		countryName.append('text')
@@ -38,19 +60,6 @@ function createMap(data) {
 			 .attr("class", "background")
 			 .attr("width", width)
 			 .attr("height", height);
-			 // .on("click", country_clicked); to be added later
-
-		function checkProperty(d) {
-			if (d.properties.Name == null && d.properties.ImageURL == null) {
-				return "misingbothcountry";
-		  } else if (d.properties.Name == null) {
-				return "nodatacountry";
-			} else if (d.properties.ImageURL == null) {
-				return "noflagcountry";
-			} else {
-				return "countries";
-			}
-		};
 
 		var g = svg.append("g");
 		svg.selectAll("g")
@@ -59,13 +68,22 @@ function createMap(data) {
 		 .data(topojson.feature(data, data.objects.merged_countries).features)
 		 .enter()
 		 .append("path")
-		 .attr("id", function(d) { return d.id; })
+		 .attr("id", function(d) { return d.properties.ADMIN; })
 		 .attr("d", path)
 		 .on('mouseover', function(d,i) {
 			d3.select('#countryname')
 				.text(d.properties.ADMIN);
 			})
-			.attr("id", d => checkProperty(d));
+			.attr("class", d => checkProperty(d))
+			.on("click", countrySelected);
 
 			svg.call(zoom);
 };
+
+function redraw()
+{
+	width = d3.select('#map').node().getBoundingClientRect().width;
+	svg.attr('width', width);
+};
+
+window.addEventListener("resize", redraw);

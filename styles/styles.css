@@ -1,0 +1,64 @@
+
+#map {
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+
+.countries{
+  fill: #cde;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.noflagcountry{
+  fill: black;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.misingbothcountry{
+  fill: red;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.nodatacountry{
+  fill: green;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.selected {
+  fill: #89a;
+}
+
+pre.prettyprint {
+  border: 1px solid #ccc;
+  margin-bottom: 0;
+  padding: 9.5px;
+}
+
+.columnleft {
+  float: left;
+  width: 70%;
+}
+.columnright {
+  float: left;
+  width: 30%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
