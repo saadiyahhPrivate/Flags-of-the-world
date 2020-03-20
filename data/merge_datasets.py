@@ -66,8 +66,24 @@ geodata = geodata.replace(
 	}
 )
 
-merged = flags.merge(geodata, how='inner', left_on='Name', right_on='ADMIN')
-fgi = merged.merge(images, how='inner', left_on='ADMIN', right_on='Country')
+
+# add data for countries founded after 1990
+
+fgi = flags.merge(geodata, how='inner', left_on='Name', right_on='ADMIN')
+fgi = fgi.merge(images, how='inner', left_on='ADMIN', right_on='Country')
+gi = geodata.merge(images, how='inner', left_on='ADMIN', right_on='Country')
+gi = gi[~gi.ADMIN.isin(fgi.ADMIN)]
+temp = pd.concat([fgi, gi], sort=False)
+# ignore zone, area, population, language, religion columns.
+# fill missing country names
+temp = temp.fillna(value={'Zone':0, 'Area':0, 'Population':0, 'Language':0, 'Religion':8, 'Name':temp.Country})
+temp.to_csv('data_to_fill.csv')
+
+# data_to_fill.csv is uploaded to google drive, 
+# where missing values are filled in manually
+
+# TODO merge with the rest of the data
+
 
 # save file
 gdf = gpd.GeoDataFrame(fgi, geometry=list(fgi['geometry']))
@@ -85,12 +101,6 @@ gdf.to_file('merged_countries.geojson', driver='GeoJSON')
 # i = images[~images.Country.isin(flags.Name) & ~images.Country.isin(geodata.ADMIN)]
 
 # 163 countries in all three datasets so far
-
-
-# TODO add countries founded after 1990
-
-
-
 
 
 
