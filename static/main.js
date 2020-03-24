@@ -44,6 +44,7 @@ function createMap(data)
 		.scaleExtent([0.4, 10])
     .on("zoom",function() {
 			g.attr('transform', d3.event.transform)
+			g.style("stroke-width", 0.5 / d3.event.transform.k + "px");
     });
 
 		countryName.append('text')
@@ -65,7 +66,7 @@ function createMap(data)
 		svg.selectAll("g")
 		 .append("g")
 		 .selectAll("path")
-		 .data(topojson.feature(data, data.objects.merged_countries).features)
+		 .data(topojson.feature(data, data.objects.merged_countries_union).features)
 		 .enter()
 		 .append("path")
 		 .attr("id", function(d) { return d.properties.ADMIN; })
