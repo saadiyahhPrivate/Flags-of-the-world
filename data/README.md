@@ -28,14 +28,16 @@ Initial data:
 
 <img src="./s1.png" alt="s1" width="50%" />
 
+2. Fill in 34 missing countries founded after 1990 (manual)
 
+<img src="./s2.png" alt="s2" width="30%" />
 
 
 
 issues: 
 
 - Flags dataset has outdated/missing info
-  - in the process of filling in
+  - filled in missing info
 - inconsistent names for one country
   - tried to fix manually as much as possible (step 1)
 - flags have changed over the years (r.g. afghanistan used to have gold but not anymore, albania, romania, argentina)
