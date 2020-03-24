@@ -2,7 +2,7 @@ import pandas as pd
 import geopandas as gpd
 import json
 
-flags = pd.read_csv('flag_data.csv')
+flags = pd.read_csv('flag_data_filled.csv')
 geodata = gpd.read_file('countries.geojson')
 images = pd.read_csv('Country_Flags.csv')
 
