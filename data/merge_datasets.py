@@ -37,7 +37,8 @@ flags = flags.replace(
 		'UK': 'United Kingdom',
 		'US Virgin Isles': 'United States Virgin Islands',
 		'USA': 'United States',
-		'Western Samoa': 'Samoa'
+		'Western Samoa': 'Samoa',
+		'Falklands-Malvinas': 'Falkland Islands',
 		}
 	}
 )
@@ -49,7 +50,8 @@ images = images.replace(
 		'Federated States of Micronesia': 'Micronesia',
 		'Republic of China': 'Taiwan',
 		'Saint Vincent and Grenadines': 'Saint Vincent and the Grenadines',
-		'The Gambia': 'Gambia'
+		'Sahrawi Arab Democratic Republic':'Western Sahara',
+		'The Gambia': 'Gambia',
 		}
 	}
 )
@@ -57,11 +59,13 @@ images = images.replace(
 geodata = geodata.replace(
 	{'ADMIN': {
 		'Federated States of Micronesia': 'Micronesia',
+		'Guinea Bissau': 'Guinea-Bissau',
 		'Hong Kong S.A.R.': 'Hong Kong',
 		'Republic of Serbia': 'Serbia',
 		'United Republic of Tanzania': 'Tanzania',
 		'United States of America': 'United States',
-		'Vatican': 'Vatican City'
+		'Vatican': 'Vatican City',
+		'Puerto Rico': 'Puerto-Rico',
 		}
 	}
 )
@@ -69,17 +73,17 @@ geodata = geodata.replace(
 
 # add data for countries founded after 1990
 
-fgi = flags.merge(geodata, how='inner', left_on='Name', right_on='ADMIN')
-fgi = fgi.merge(images, how='inner', left_on='ADMIN', right_on='Country')
-gi = geodata.merge(images, how='inner', left_on='ADMIN', right_on='Country')
+fgi = flags.merge(geodata, how='outer', left_on='Name', right_on='ADMIN')
+fgi = fgi.merge(images, how='outer', left_on='ADMIN', right_on='Country')
+gi = geodata.merge(images, how='outer', left_on='ADMIN', right_on='Country')
 gi = gi[~gi.ADMIN.isin(fgi.ADMIN)]
 temp = pd.concat([fgi, gi], sort=False)
 # ignore zone, area, population, language, religion columns.
 # fill missing country names
 temp = temp.fillna(value={'Zone':0, 'Area':0, 'Population':0, 'Language':0, 'Religion':8, 'Name':temp.Country})
-temp.to_csv('data_to_fill.csv')
+#temp.to_csv('data_to_fill.csv')
 
-# data_to_fill.csv is uploaded to google drive, 
+# data_to_fill.csv is uploaded to google drive,
 # where missing values are filled in manually
 
 # TODO merge with the rest of the data
@@ -87,7 +91,7 @@ temp.to_csv('data_to_fill.csv')
 
 # save file
 gdf = gpd.GeoDataFrame(fgi, geometry=list(fgi['geometry']))
-gdf.to_file('merged_countries.geojson', driver='GeoJSON')
+gdf.to_file('merged_countries_union.geojson', driver='GeoJSON')
 
 
 # fg = flags.merge(geodata, how='inner', left_on='Name', right_on='ADMIN')
@@ -101,7 +105,3 @@ gdf.to_file('merged_countries.geojson', driver='GeoJSON')
 # i = images[~images.Country.isin(flags.Name) & ~images.Country.isin(geodata.ADMIN)]
 
 # 163 countries in all three datasets so far
-
-
-
-
