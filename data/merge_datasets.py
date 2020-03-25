@@ -3,7 +3,7 @@ import geopandas as gpd
 import json
 
 flags = pd.read_csv('flag_data_filled.csv')
-geodata = gpd.read_file('countries.geojson')
+geodata = gpd.read_file('countries_modified.geojson')
 images = pd.read_csv('Country_Flags.csv')
 
 
@@ -56,26 +56,26 @@ images = images.replace(
 	}
 )
 
-geodata = geodata.replace(
-	{'ADMIN': {
-		'Federated States of Micronesia': 'Micronesia',
-		'Guinea Bissau': 'Guinea-Bissau',
-		'Hong Kong S.A.R.': 'Hong Kong',
-		'Republic of Serbia': 'Serbia',
-		'United Republic of Tanzania': 'Tanzania',
-		'United States of America': 'United States',
-		'Vatican': 'Vatican City',
-		'Puerto Rico': 'Puerto-Rico',
-		}
-	}
-)
+# geodata = geodata.replace(
+# 	{'ADMIN': {
+# 		'Federated States of Micronesia': 'Micronesia',
+# 		'Guinea Bissau': 'Guinea-Bissau',
+# 		'Hong Kong S.A.R.': 'Hong Kong',
+# 		'Republic of Serbia': 'Serbia',
+# 		'United Republic of Tanzania': 'Tanzania',
+# 		'United States of America': 'United States',
+# 		'Vatican': 'Vatican City',
+# 		'Puerto Rico': 'Puerto-Rico',
+# 		}
+# 	}
+# )
 
 
 # add data for countries founded after 1990
 
-fgi = flags.merge(geodata, how='outer', left_on='Name', right_on='ADMIN')
-fgi = fgi.merge(images, how='outer', left_on='ADMIN', right_on='Country')
-gi = geodata.merge(images, how='outer', left_on='ADMIN', right_on='Country')
+fgi = flags.merge(geodata, how='inner', left_on='Name', right_on='ADMIN')
+fgi = fgi.merge(images, how='inner', left_on='ADMIN', right_on='Country')
+gi = geodata.merge(images, how='inner', left_on='ADMIN', right_on='Country')
 gi = gi[~gi.ADMIN.isin(fgi.ADMIN)]
 temp = pd.concat([fgi, gi], sort=False)
 # ignore zone, area, population, language, religion columns.
@@ -91,7 +91,7 @@ temp = temp.fillna(value={'Zone':0, 'Area':0, 'Population':0, 'Language':0, 'Rel
 
 # save file
 gdf = gpd.GeoDataFrame(fgi, geometry=list(fgi['geometry']))
-gdf.to_file('merged_countries_union.geojson', driver='GeoJSON')
+gdf.to_file('merged_countries.geojson', driver='GeoJSON')
 
 
 # fg = flags.merge(geodata, how='inner', left_on='Name', right_on='ADMIN')
