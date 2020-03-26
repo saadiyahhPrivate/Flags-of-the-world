@@ -31,7 +31,7 @@
 <script>
     // Cache busting
     document.write('<scr' + 'ipt src="static/main.js?cb=' + new Date().getTime() + '"></scr' + 'ipt>');
-    d3.json('data/merged_countries_union_simplified.json', function(err, data) {
+    d3.json('data/merged_countries_simplified.json', function(err, data) {
         createMap(data);
     });
 
