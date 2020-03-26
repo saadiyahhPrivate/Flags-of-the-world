@@ -3,7 +3,7 @@ import geopandas as gpd
 import json
 
 flags = pd.read_csv('flag_data_filled.csv')
-geodata = gpd.read_file('countries.geojson')
+geodata = gpd.read_file('countries_modified.geojson')
 images = pd.read_csv('Country_Flags.csv')
 
 
@@ -37,7 +37,8 @@ flags = flags.replace(
 		'UK': 'United Kingdom',
 		'US Virgin Isles': 'United States Virgin Islands',
 		'USA': 'United States',
-		'Western Samoa': 'Samoa'
+		'Western Samoa': 'Samoa',
+		'Falklands-Malvinas': 'Falkland Islands',
 		}
 	}
 )
@@ -49,22 +50,25 @@ images = images.replace(
 		'Federated States of Micronesia': 'Micronesia',
 		'Republic of China': 'Taiwan',
 		'Saint Vincent and Grenadines': 'Saint Vincent and the Grenadines',
-		'The Gambia': 'Gambia'
+		'Sahrawi Arab Democratic Republic':'Western Sahara',
+		'The Gambia': 'Gambia',
 		}
 	}
 )
 
-geodata = geodata.replace(
-	{'ADMIN': {
-		'Federated States of Micronesia': 'Micronesia',
-		'Hong Kong S.A.R.': 'Hong Kong',
-		'Republic of Serbia': 'Serbia',
-		'United Republic of Tanzania': 'Tanzania',
-		'United States of America': 'United States',
-		'Vatican': 'Vatican City'
-		}
-	}
-)
+# geodata = geodata.replace(
+# 	{'ADMIN': {
+# 		'Federated States of Micronesia': 'Micronesia',
+# 		'Guinea Bissau': 'Guinea-Bissau',
+# 		'Hong Kong S.A.R.': 'Hong Kong',
+# 		'Republic of Serbia': 'Serbia',
+# 		'United Republic of Tanzania': 'Tanzania',
+# 		'United States of America': 'United States',
+# 		'Vatican': 'Vatican City',
+# 		'Puerto Rico': 'Puerto-Rico',
+# 		}
+# 	}
+# )
 
 
 # add data for countries founded after 1990
@@ -77,9 +81,9 @@ temp = pd.concat([fgi, gi], sort=False)
 # ignore zone, area, population, language, religion columns.
 # fill missing country names
 temp = temp.fillna(value={'Zone':0, 'Area':0, 'Population':0, 'Language':0, 'Religion':8, 'Name':temp.Country})
-temp.to_csv('data_to_fill.csv')
+#temp.to_csv('data_to_fill.csv')
 
-# data_to_fill.csv is uploaded to google drive, 
+# data_to_fill.csv is uploaded to google drive,
 # where missing values are filled in manually
 
 # TODO merge with the rest of the data
@@ -101,7 +105,3 @@ gdf.to_file('merged_countries.geojson', driver='GeoJSON')
 # i = images[~images.Country.isin(flags.Name) & ~images.Country.isin(geodata.ADMIN)]
 
 # 163 countries in all three datasets so far
-
-
-
-

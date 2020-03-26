@@ -41,9 +41,10 @@ function createMap(data)
   							 .projection(projection);
 
 		var zoom = d3.zoom()
-		.scaleExtent([0.4, 10])
+		.scaleExtent([0.4, 100])
     .on("zoom",function() {
 			g.attr('transform', d3.event.transform)
+			g.style("stroke-width", 1 / d3.event.transform.k + "px");
     });
 
 		countryName.append('text')
