@@ -1,6 +1,8 @@
 var width  = d3.select('#map').node().getBoundingClientRect().width;
 var height = width * 0.6;
 
+var flagimage = document.getElementById("imageid");
+
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
 	.attr('height', height);
@@ -51,8 +53,8 @@ function createMap(data)
 			.attr('id', 'countryname')
 			.attr('x', 20)
 			.attr('y', 20)
-			.attr('fill', 'blue')
-			.text('Country Name!')
+            .attr('fill', 'blue')
+            .text('Country Name!')
 
 		svg.attr("preserveAspectRatio", "xMidYMid")
        .attr("viewBox", "0 0 " + width + " " + height);
@@ -60,7 +62,7 @@ function createMap(data)
 		var view = svg.append("rect")
 			 .attr("class", "background")
 			 .attr("width", width)
-			 .attr("height", height);
+             .attr("height", height);
 
 		var g = svg.append("g");
 		svg.selectAll("g")
@@ -69,12 +71,13 @@ function createMap(data)
 		 .data(topojson.feature(data, data.objects.merged_countries_union).features)
 		 .enter()
 		 .append("path")
-		 .attr("id", function(d) { return d.properties.ADMIN; })
+         .attr("id", function(d) { return d.properties.ADMIN; })
 		 .attr("d", path)
-		 .on('mouseover', function(d,i) {
-			d3.select('#countryname')
-				.text(d.properties.ADMIN);
-			})
+        .on('mouseover', function(d) {
+                d3.select('#countryname')
+                    .text(d.properties.ADMIN);
+                flagimage.src=d.properties.ImageURL;
+                })
 			.attr("class", d => checkProperty(d))
 			.on("click", countrySelected);
 
