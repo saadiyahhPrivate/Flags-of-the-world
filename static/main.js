@@ -2,7 +2,6 @@
 var width  = 0;
 var height = 0;
 redraw();
-console.log(height);
 
 var flagimage = document.getElementById("imageid");
 
@@ -20,20 +19,6 @@ function countrySelected()
 			d.classed('selected', true);
 	}
 	// TODO: drive visualization graphs to repaint on these events!
-};
-
-// this function is just for debugging purposes,
-// once we have all country data, this can be scrapped
-function checkProperty(d) {
-	if (d.properties.Name == null && d.properties.ImageURL == null) {
-		return "misingbothcountry";
-  } else if (d.properties.Name == null) {
-		return "nodatacountry";
-	} else if (d.properties.ImageURL == null) {
-		return "noflagcountry";
-	} else {
-		return "countries";
-	}
 };
 
 function createMap(data)
@@ -57,7 +42,7 @@ function createMap(data)
 			.attr('x', 20)
 			.attr('y', 20)
             .attr('fill', 'blue')
-            .text('Country Name!')
+            .text('Hover over a country to see its map!')
 
 		svg.attr("preserveAspectRatio", "xMidYMid")
        .attr("viewBox", "0 0 " + width + " " + height);
@@ -82,7 +67,7 @@ function createMap(data)
                     .text(d.properties.ADMIN);
                 flagimage.src=d.properties.ImageURL;
                 })
-			.attr("class", d => checkProperty(d))
+			.attr("class", "country")
 			.on("click", countrySelected);
 
 			svg.call(zoom);

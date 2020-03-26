@@ -5,7 +5,7 @@ body {
 }
 
 .background {
-  fill: green; /* map area background color */
+  fill: grey; /* map area background color */
   pointer-events: all;
   height: 100%;
   width: 100%;
@@ -14,6 +14,10 @@ body {
 #titlebar {
   font-size: 50px;
   padding: 5px;
+}
+
+#flag_details {
+  background-color: lightgrey; /* tbd */
 }
 
 svg {
@@ -43,30 +47,9 @@ svg {
   height: 100vh;
 }
 
-.countries{
+.country{
   fill: #cde;
-  stroke: #fff;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.noflagcountry{
-  fill: black;
-  stroke: #fff;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.misingbothcountry{
-  fill: red;
-  stroke: #fff;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.nodatacountry{
-  fill: green;
-  stroke: #fff;
+  stroke: grey;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
@@ -80,10 +63,3 @@ pre.prettyprint {
   margin-bottom: 0;
   padding: 9.5px;
 }
-
-/* Clear floats after the columns */
-/* .roundedcorners:after {
-  content: "";
-  display: table;
-  clear: both;
-} */
