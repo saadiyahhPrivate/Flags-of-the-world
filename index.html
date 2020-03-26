@@ -3,27 +3,36 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- <link rel="stylesheet" href="style.css"/> -->
+
     <!-- Scripts -->
     <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
     <script src="https://unpkg.com/topojson-simplify@3"></script>
-    <link rel="stylesheet" href="styles/styles.css">
+    <script>
+        // Cache busting
+        document.write('<lin' + 'k rel="stylesheet" href="styles/styles.css?cb=' + new Date().getTime() + '"></k' + 'ink>');
+    </script>
     <title>Flags of the World</title>
 </head>
 <body>
-  <div class="row">
+  <div id="titlebar">
+    Flags of the World : A dashboard to view country flags
   </div>
-  <div class="row">
-    <div class="columnleft">
-        <div id="map"></div>
+  <div>
+    <div class="roundedcorners" id="columnleft">
+      <div id="map"></div>
+      <div class="roundedcorners" >
+        this area will contain some filters
+      </div>
     </div>
-    <div class="columnright"></div>
-  </div>
-  <div class="row">
-    <div id="countryname"></div>
+    <div class="roundedcorners" id="columnright">
+      <div>
+        <div class="roundedcorners" id="countryname"></div>
+      </div>
+      <div class="roundedcorners" >this area will contain the little bar chart</div>
+    </div>
   </div>
 </body>
 <script>
@@ -32,6 +41,5 @@
     d3.json('data/merged_countries_simplified.json', function(err, data) {
         createMap(data);
     });
-
 </script>
 </html>

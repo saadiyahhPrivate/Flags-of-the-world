@@ -1,12 +1,46 @@
-
-#map {
-  background-color: #fff;
-  border: 1px solid #ccc;
+body {
+  top: 0px
+  bottom: 0px;
+  background-color:grey; /* general page background color TBD */
 }
 
 .background {
-  fill: none;
+  fill: green; /* map area background color */
   pointer-events: all;
+  height: 100%;
+  width: 100%;
+}
+
+#titlebar {
+  font-size: 50px;
+  padding: 5px;
+}
+
+svg {
+  height: 100%;
+  width: 100%;
+}
+
+.roundedcorners {
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin: 5px;
+}
+
+.roundedcornersmap {
+  border-radius: 15px;
+}
+
+#columnleft {
+  float: left;
+  width: 70%;
+  height: 100vh;
+}
+
+#columnright {
+  float: left;
+  width: 25%;
+  height: 100vh;
 }
 
 .countries{
@@ -47,18 +81,9 @@ pre.prettyprint {
   padding: 9.5px;
 }
 
-.columnleft {
-  float: left;
-  width: 70%;
-}
-.columnright {
-  float: left;
-  width: 30%;
-}
-
 /* Clear floats after the columns */
-.row:after {
+/* .roundedcorners:after {
   content: "";
   display: table;
   clear: both;
-}
+} */

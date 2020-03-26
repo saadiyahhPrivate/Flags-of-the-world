@@ -1,9 +1,12 @@
-var width  = d3.select('#map').node().getBoundingClientRect().width;
-var height = width * 0.6;
+
+var width  = 0;
+var height = 0;
+redraw();
+console.log(height);
 
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
-	.attr('height', height);
+	.attr('class', "roundedcornersmap");
 const countryName = d3.select('#countryname');
 
 function countrySelected()
@@ -58,9 +61,7 @@ function createMap(data)
        .attr("viewBox", "0 0 " + width + " " + height);
 
 		var view = svg.append("rect")
-			 .attr("class", "background")
-			 .attr("width", width)
-			 .attr("height", height);
+			 .attr("class", "background");
 
 		var g = svg.append("g");
 		svg.selectAll("g")
@@ -84,7 +85,7 @@ function createMap(data)
 function redraw()
 {
 	width = d3.select('#map').node().getBoundingClientRect().width;
-	svg.attr('width', width);
+	height = width * 0.5;
 };
 
 window.addEventListener("resize", redraw);
