@@ -58,6 +58,29 @@ svg {
   fill: #89a;
 }
 
+.map-overlay {
+  position: absolute;
+  padding: 10px;
+}
+
+.map-button {
+   width: 100px;
+   height: 30px;
+   font-weight: bold;
+   background-color: white;
+   opacity: 0.5;
+   color: black;
+   border: 1px;
+   font: 10px Arial;
+   border-radius: 15px;
+   display: block;
+   outline: none;
+ }
+
+.map-button:active {
+   background-color: grey;
+}
+
 pre.prettyprint {
   border: 1px solid #ccc;
   margin-bottom: 0;

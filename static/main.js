@@ -24,9 +24,16 @@ var projection = d3.geoMercator()
 var path = d3.geoPath()
 	.projection(projection);
 
+function clearSelections()
+{
+	svg.selectAll("path")
+		.classed('selected', false);
+};
+
 function countrySelected()
 {
 	var d = d3.select(this);
+	console.log(d);
 	if (d.classed('selected')) {
 			d.classed('selected', false);
 	} else {
