@@ -23,7 +23,7 @@
   <div>
     <div class="roundedcorners" id="columnleft">
       <div id="map"></div>
-      <div class="roundedcorners" >
+      <div class="roundedcorners" id="filters" >
         this area will contain some filters
       </div>
     </div>
@@ -39,8 +39,8 @@
 <script>
     // Cache busting
     document.write('<scr' + 'ipt src="static/main.js?cb=' + new Date().getTime() + '"></scr' + 'ipt>');
-    d3.json('data/merged_countries_simplified.json', function(err, data) {
-        createMap(data);
-    });
+    // d3.json('data/merged_countries_simplified.json', function(err, data) {
+    //     createMap(data);
+    // });
 </script>
 </html>

@@ -1,4 +1,4 @@
-
+// Declare constants and variables
 var width  = 0;
 var height = 0;
 redraw();
@@ -10,6 +10,20 @@ const svg = d3.select('#map').append('svg')
 	.attr('class', "roundedcornersmap");
 const countryName = d3.select('#countryname');
 
+const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
+const shapes = ['Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
+
+const filt = d3.select('#filters').append('svg')
+	.attr('width', width)
+	.attr('height', height/3);
+
+var projection = d3.geoMercator()
+	.scale(300)
+	.translate([width / 2, height / 1.5]);
+
+var path = d3.geoPath()
+	.projection(projection);
+
 function countrySelected()
 {
 	var d = d3.select(this);
@@ -20,57 +34,73 @@ function countrySelected()
 	}
 	// TODO: drive visualization graphs to repaint on these events!
 };
-
-function createMap(data)
+function filterSelected()
 {
-    var projection = d3.geoMercator()
-        .scale(300)
-        .translate([width / 2, height / 1.5]);
+	var d = d3.select(this);
+	if (d.classed('selected')) {
+			d.classed('selected', false);
+	} else {
+			d.classed('selected', true);
+	}
+};
 
-    var path = d3.geoPath()
-  							 .projection(projection);
+function zoomed() {
+	svg.select('g')
+		.attr('transform', d3.event.transform)
+		.style("stroke-width", 1 / d3.event.transform.k + "px");
+}
 
-		var zoom = d3.zoom()
+function createMap(data) {
+	var zoom = d3.zoom()
 		.scaleExtent([0.4, 100])
-    .on("zoom",function() {
-			g.attr('transform', d3.event.transform)
-			g.style("stroke-width", 1 / d3.event.transform.k + "px");
-    });
+		.on('zoom', zoomed)
 
-		countryName.append('text')
-			.attr('id', 'countryname')
-			.attr('x', 20)
-			.attr('y', 20)
-            .attr('fill', 'blue')
-            .text('Hover over a country to see its map!')
+	countryName.append('text')
+		.attr('id', 'countryname')
+		.attr('x', 20)
+		.attr('y', 20)
+		.attr('fill', 'blue')
+		.text('Hover over a country to see its map!')
 
-		svg.attr("preserveAspectRatio", "xMidYMid")
-       .attr("viewBox", "0 0 " + width + " " + height);
+	svg.attr("preserveAspectRatio", "xMidYMid")
+	   .attr("viewBox", "0 0 " + width + " " + height);
 
-		var view = svg.append("rect")
-			 .attr("class", "background")
-			 .attr("width", width)
-             .attr("height", height);
+	var view = svg.append("rect")
+		 .attr("class", "background")
+		 .attr("width", width)
+		 .attr("height", height);
 
 
-		var g = svg.append("g");
-		svg.selectAll("g")
-		 .append("g")
-		 .selectAll("path")
-		 .data(topojson.feature(data, data.objects.merged_countries).features)
-		 .enter()
-		 .append("path")
-         .attr("id", function(d) { return d.properties.ADMIN; })
-		 .attr("d", path)
-        .on('mouseover', function(d) {
-                d3.select('#countryname')
-                    .text(d.properties.ADMIN);
-                flagimage.src=d.properties.ImageURL;
-                })
+	var g = svg.append("g");
+	svg.selectAll("g")
+		.append("g")
+		.selectAll("path")
+		.data(topojson.feature(data, data.objects.merged_countries).features)
+		.enter()
+		.append("path")
+		.attr("id", function(d) { return d.properties.Name; })
+		.attr("d", path)
+		.on('mouseover', function(d) {
+			d3.select('#countryname')
+				.text(d.properties.Name);
+			flagimage.src=d.properties.ImageURL;
+			})
 			.attr("class", "country")
 			.on("click", countrySelected);
 
-			svg.call(zoom);
+	svg.call(zoom);
+
+	filt.selectAll('text.filter-label')
+		.data(colors)
+		.enter()
+		.append('text')
+		.attr('class', 'filter-label')
+		.attr('x', function(d,i) {return i/8*width})
+		.attr('y', 30)
+		.attr('fill', 'black')
+		.attr('text-anchor', 'start')
+		.text(d => d)
+		.on('click', filterSelected);
 };
 
 function redraw()
@@ -80,3 +110,7 @@ function redraw()
 };
 
 window.addEventListener("resize", redraw);
+
+d3.json('data/merged_countries_simplified.json', function(err, data) {
+		createMap(data);
+	});
