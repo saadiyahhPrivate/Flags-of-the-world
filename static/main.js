@@ -5,7 +5,7 @@ redraw();
 
 var mapdata = {};
 
-var flagimage = document.getElementById("imageid");
+// var flagimage = document.getElementById("imageid");
 
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
@@ -16,6 +16,11 @@ const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
 const shapes = ['Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
 
 const filt = d3.select('#filters').append('svg');
+
+// Define the div for the tooltip
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 var projection = d3.geoMercator()
 	.scale(300)
@@ -134,13 +139,23 @@ function createMap(data) {
 		.append("path")
 		.attr("id", function(d) { return d.properties.Name; })
 		.attr("d", path)
-		.on('mouseover', function(d) {
-			d3.select('#countryname')
-				.text(d.properties.Name);
-			flagimage.src=d.properties.ImageURL;
-			})
 		.attr("class", "country")
-		.on("click", countrySelected);
+		.on("click", countrySelected)
+		.on("mouseover", function(d) {
+		 div.transition()
+				 .duration(200)
+				 .style("opacity", .9);
+		 div.html(d.properties.Name + "<br/>" +
+		 			'<img src= "' + d.properties.ImageURL + '"' +
+					" height='50' width='auto' border='1'>")
+				 .style("left", (d3.event.pageX) + "px")
+				 .style("top", (d3.event.pageY + 25) + "px");
+		 })
+		 .on("mouseout", function(d) {
+				 div.transition()
+						 .duration(500)
+						 .style("opacity", 0);
+		 });
 
 	svg.call(zoom);
 
