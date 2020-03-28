@@ -24,7 +24,23 @@
     <div class="roundedcorners" id="columnleft">
       <div id="map">
         <div class="map-overlay">
-          <button class="map-button" onclick="clearSelections()">Clear Selections</button>
+          <button class="map-button" onclick="clearSelections()">Clear Selected Countries</button>
+          <!-- 1=N.America, 2=S.America, 3=Europe, 4=Africa, 5=Asia, 6=Oceania -->
+          <fieldset id="landmasschoices">
+            <legend>Select Region: </legend>
+            <input type="checkbox" class="landmass-checkbox" id="north-america" name="north-america" value="1">
+            <label for="north-america">North-America </label><br>
+            <input type="checkbox" class="landmass-checkbox" id="south-america" name="south-america" value="2">
+            <label for="south-america">South-America </label><br>
+            <input type="checkbox" class="landmass-checkbox" id="europe" name="europe" value="3">
+            <label for="europe">Europe</label><br>
+            <input type="checkbox" class="landmass-checkbox" id="africa" name="africa" value="4">
+            <label for="africa">Africa</label><br>
+            <input type="checkbox" class="landmass-checkbox" id="asia" name="asia" value="5">
+            <label for="asia">Asia</label><br>
+            <input type="checkbox" class="landmass-checkbox" id="oceania" name="oceania" value="6">
+            <label for="oceania">Oceania</label><br>
+          </fieldset>
         </div>
       </div>
       <div class="roundedcorners" id="filters" >

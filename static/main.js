@@ -3,6 +3,8 @@ var width  = 0;
 var height = 0;
 redraw();
 
+var mapdata = {};
+
 var flagimage = document.getElementById("imageid");
 
 const svg = d3.select('#map').append('svg')
@@ -24,16 +26,9 @@ var projection = d3.geoMercator()
 var path = d3.geoPath()
 	.projection(projection);
 
-function clearSelections()
-{
-	svg.selectAll("path")
-		.classed('selected', false);
-};
-
 function countrySelected()
 {
 	var d = d3.select(this);
-	console.log(d);
 	if (d.classed('selected')) {
 			d.classed('selected', false);
 	} else {
@@ -41,6 +36,7 @@ function countrySelected()
 	}
 	// TODO: drive visualization graphs to repaint on these events!
 };
+
 function filterSelected()
 {
 	var d = d3.select(this);
@@ -56,6 +52,59 @@ function zoomed() {
 		.attr('transform', d3.event.transform)
 		.style("stroke-width", 1 / d3.event.transform.k + "px");
 }
+
+function clearSelections()
+{
+	// clear all user selections on the map
+	svg.selectAll("path")
+		 .classed('selected', false);
+
+	// clear the selected landmasses as well!
+	landmassesSelected = [];
+	[].forEach.call(document.getElementsByClassName("landmass-checkbox"),
+									function (el) {el.checked = false});
+
+	// TODO: trigger histogram changes
+};
+
+function updateLandmassSelections(landmasses_selected, landmasses_unselected)
+{
+	svg.selectAll("path")
+		 .filter(function(d) {return landmasses_selected.includes(d.properties.Landmass);})
+		 .classed('selected', true);
+
+	svg.selectAll("path")
+		 .filter(function(d) {return landmasses_unselected.includes(d.properties.Landmass);})
+		 .classed('selected', false);
+
+	// TODO: trigger histogram changes
+};
+
+var landmasses = new Map(
+	[["north-america", 1],["south-america",2],["europe",3],["africa",4],["asia",5],["oceania",6]]);
+var landmassesSelected = [];
+d3.select("#landmasschoices").on("input", function() {
+	let landmassesUnselected = [];
+	landmasses.forEach((landmassid, landmass) => {
+		var doc_element = document.getElementById(landmass);
+		if (doc_element.checked) {
+			if (landmassesSelected.indexOf(landmassid) == -1) {
+				landmassesSelected.push(landmassid);
+			}
+		} else {
+			if (landmassesSelected.includes(landmassid)) {
+				landmassesUnselected.push(landmassid);
+			}
+			const index = landmassesSelected.indexOf(landmassid);
+			if (index > -1) {
+			  landmassesSelected.splice(index, 1);
+			}
+		}
+	});
+
+	// update selections
+	updateLandmassSelections(landmassesSelected, landmassesUnselected);
+});
 
 function createMap(data) {
 	var zoom = d3.zoom()
@@ -76,7 +125,6 @@ function createMap(data) {
 		 .attr("class", "background")
 		 .attr("width", width)
 		 .attr("height", height);
-
 
 	var g = svg.append("g");
 	svg.selectAll("g")
@@ -119,5 +167,7 @@ function redraw()
 window.addEventListener("resize", redraw);
 
 d3.json('data/merged_countries_simplified.json', function(err, data) {
+		// store map of countries
+		mapdata = data.objects.merged_countries.geometries;
 		createMap(data);
-	});
+});
