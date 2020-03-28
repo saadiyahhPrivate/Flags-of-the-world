@@ -15,9 +15,7 @@ const countryName = d3.select('#countryname');
 const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
 const shapes = ['Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
 
-const filt = d3.select('#filters').append('svg')
-	.attr('width', width)
-	.attr('height', height/3);
+const filt = d3.select('#filters').append('svg');
 
 var projection = d3.geoMercator()
 	.scale(300)
@@ -34,7 +32,8 @@ function countrySelected()
 	} else {
 			d.classed('selected', true);
 	}
-	// TODO: drive visualization graphs to repaint on these events!
+
+	updateHistograms();
 };
 
 function filterSelected()
@@ -64,7 +63,7 @@ function clearSelections()
 	[].forEach.call(document.getElementsByClassName("landmass-checkbox"),
 									function (el) {el.checked = false});
 
-	// TODO: trigger histogram changes
+	updateHistograms();
 };
 
 function updateLandmassSelections(landmasses_selected, landmasses_unselected)
@@ -77,7 +76,7 @@ function updateLandmassSelections(landmasses_selected, landmasses_unselected)
 		 .filter(function(d) {return landmasses_unselected.includes(d.properties.Landmass);})
 		 .classed('selected', false);
 
-	// TODO: trigger histogram changes
+	updateHistograms();
 };
 
 var landmasses = new Map(
@@ -140,8 +139,8 @@ function createMap(data) {
 				.text(d.properties.Name);
 			flagimage.src=d.properties.ImageURL;
 			})
-			.attr("class", "country")
-			.on("click", countrySelected);
+		.attr("class", "country")
+		.on("click", countrySelected);
 
 	svg.call(zoom);
 
@@ -161,7 +160,15 @@ function createMap(data) {
 function redraw()
 {
 	width = d3.select('#map').node().getBoundingClientRect().width;
-	height = width * 0.5;
+	height = width * 0.6;
+};
+
+function 	updateHistograms()
+{
+	svg.selectAll("path.selected") // selects all the countries highlighted ()
+			// now we have all the countries highlighted, we can use them to draw the histograms!
+			// just an example filter to see all the selected countries logged to console
+		 .filter(function(d) {console.log(d.properties.Name); return true;});
 };
 
 window.addEventListener("resize", redraw);
