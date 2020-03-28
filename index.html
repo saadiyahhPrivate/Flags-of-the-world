@@ -44,7 +44,47 @@
         </div>
       </div>
       <div class="roundedcorners" id="filters" >
-        this area will contain some filters
+        <fieldset id="colorchoices">
+          <legend>Select Colors: </legend>
+          <input type="checkbox" class="color-checkbox" id="red" name="red" value="1">
+          <label for="red">Red </label>
+          <input type="checkbox" class="color-checkbox" id="green" name="green" value="2">
+          <label for="green">Green </label>
+          <input type="checkbox" class="color-checkbox" id="blue" name="blue" value="3">
+          <label for="blue">Blue </label>
+          <input type="checkbox" class="color-checkbox" id="gold" name="gold" value="4">
+          <label for="gold">Yellow</label>
+          <input type="checkbox" class="color-checkbox" id="white" name="white" value="5">
+          <label for="white">White</label>
+          <input type="checkbox" class="color-checkbox" id="black" name="black" value="6">
+          <label for="black">Black</label>
+          <input type="checkbox" class="color-checkbox" id="orange" name="orange" value="7">
+          <label for="orange">Orange</label>
+        </fieldset>
+
+        <fieldset id="shapechoices">
+          <legend>Select Shapes: </legend>
+          <input type="checkbox" class="shape-checkbox" id="circles" name="circles" value="1">
+          <label for="circles">Circles </label>
+          <input type="checkbox" class="shape-checkbox" id="crosses" name="crosses" value="2">
+          <label for="crosses">Crosses </label>
+          <input type="checkbox" class="shape-checkbox" id="saltires" name="saltires" value="3">
+          <label for="saltires">Saltires </label>
+          <input type="checkbox" class="shape-checkbox" id="quarters" name="quarters" value="4">
+          <label for="quarters">Quarters</label>
+          <input type="checkbox" class="shape-checkbox" id="sunstars" name="sunstars" value="5">
+          <label for="sunstars">Sunstars</label>
+          <input type="checkbox" class="shape-checkbox" id="crescent" name="crescent" value="6">
+          <label for="crescent">Crescent</label>
+          <input type="checkbox" class="shape-checkbox" id="triangle" name="triangle" value="7">
+          <label for="triangle">Triangle</label>
+          <input type="checkbox" class="shape-checkbox" id="icon" name="icon" value="8">
+          <label for="icon">Icon</label>
+          <input type="checkbox" class="shape-checkbox" id="animate" name="animate" value="9">
+          <label for="animate">Animate</label>
+          <input type="checkbox" class="shape-checkbox" id="text" name="text" value="10">
+          <label for="text">Text</label>
+        </fieldset>
       </div>
     </div>
     <div class="roundedcorners" id="columnright">
@@ -59,8 +99,5 @@
 <script>
     // Cache busting
     document.write('<scr' + 'ipt src="static/main.js?cb=' + new Date().getTime() + '"></scr' + 'ipt>');
-    // d3.json('data/merged_countries_simplified.json', function(err, data) {
-    //     createMap(data);
-    // });
 </script>
 </html>
