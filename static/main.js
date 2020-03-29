@@ -3,19 +3,23 @@ var width  = 0;
 var height = 0;
 redraw();
 
-var mapdata = {};
+var selectedCountries = [];
 
 // var flagimage = document.getElementById("imageid");
 
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
 	.attr('class', "roundedcornersmap");
-const countryName = d3.select('#countryname');
+// const countryName = d3.select('#countryname');
 
+
+// Filter-related variables
 const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
-const shapes = ['Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
-
-const filt = d3.select('#filters').append('svg');
+// const colors = new Map(
+// 	[["red", 1],["green",2],["blue",3],["gold",4],["white",5],["black",6],["orange",7]]);
+// const shapes = ['Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
+// const shapes = new Map(
+// 	[["circles", 1],["crosses",2],["saltires",3],["quarters",4],["sunstars",5],["crescent",6],["triangle",7],["icon",8],["animate",9],["text",10]]);
 
 // Define the div for the tooltip
 var div = d3.select("body").append("div")
@@ -39,17 +43,59 @@ function countrySelected()
 	}
 
 	updateHistograms();
+	// updateFlagDisplay();
 };
 
-function filterSelected()
-{
+function updateFilter() {
 	var d = d3.select(this);
-	if (d.classed('selected')) {
-			d.classed('selected', false);
-	} else {
-			d.classed('selected', true);
+	var selectedColor = this.textContent;
+
+	// update button visual
+	d.classed('selected', !d.classed('selected'));
+	d.attr('font-weight', (d.classed('selected') ? 'bold' : 'normal'))
+
+	// recalculate selected countries
+	var activeFilters = d3.selectAll('#filters .selected');
+	var selected = mapdata;
+	activeFilters.each(function(filt) {
+		selected = selected
+			.filter(d => d.properties[filt] != 0)
+	})
+
+	svg.selectAll('path')
+		.classed('selected', false)
+	if (!activeFilters.empty()) {
+		selected.forEach(function(d) {
+			svg.select('#'+d.properties.Name.split(' ').join(''))
+				.classed('selected', true)
+		})
 	}
-};
+	
+	// update flag display on right
+	updateFlagDisplay(selected)
+}
+
+function updateFlagDisplay(selection) {
+	// var selected = svg.selectAll('path.selected')
+	// if (selected.empty()) {selected = svg.selectAll('path')};
+	// console.log(selected);
+
+	// TODO need to figure out how to bind svg map data with flag data
+
+	d3.selectAll('#flagdisplay img').remove()
+
+	var flags = d3.select('#flagdisplay')
+			.selectAll('img')
+			// .data(selected, function(d) {return d ? d.properties.ImageURL : this.src})
+			.data(selection)
+
+	flags
+		.enter()
+		.append('img')
+		.attr('src', d => d.properties.ImageURL)
+		.attr('height', 20)
+		.attr('width', 30)
+}
 
 function zoomed() {
 	svg.select('g')
@@ -69,6 +115,7 @@ function clearSelections()
 									function (el) {el.checked = false});
 
 	updateHistograms();
+	updateFlagDisplay(mapdata);
 };
 
 function updateLandmassSelections(landmasses_selected, landmasses_unselected)
@@ -82,6 +129,7 @@ function updateLandmassSelections(landmasses_selected, landmasses_unselected)
 		 .classed('selected', false);
 
 	updateHistograms();
+	// updateFlagDisplay();
 };
 
 var landmasses = new Map(
@@ -111,16 +159,10 @@ d3.select("#landmasschoices").on("input", function() {
 });
 
 function createMap(data) {
+	mapdata = topojson.feature(data, data.objects.merged_countries).features;
 	var zoom = d3.zoom()
 		.scaleExtent([0.4, 100])
 		.on('zoom', zoomed)
-
-	countryName.append('text')
-		.attr('id', 'countryname')
-		.attr('x', 20)
-		.attr('y', 20)
-		.attr('fill', 'blue')
-		.text('Hover over a country to see its map!')
 
 	svg.attr("preserveAspectRatio", "xMidYMid")
 	   .attr("viewBox", "0 0 " + width + " " + height);
@@ -134,10 +176,10 @@ function createMap(data) {
 	svg.selectAll("g")
 		.append("g")
 		.selectAll("path")
-		.data(topojson.feature(data, data.objects.merged_countries).features)
+		.data(mapdata)
 		.enter()
 		.append("path")
-		.attr("id", function(d) { return d.properties.Name; })
+		.attr("id", function(d) { return d.properties.Name.split(' ').join(''); })
 		.attr("d", path)
 		.attr("class", "country")
 		.on("click", countrySelected)
@@ -159,17 +201,23 @@ function createMap(data) {
 
 	svg.call(zoom);
 
-	filt.selectAll('text.filter-label')
+	// Filters
+	d3.select('#filters').append('svg')
+		.selectAll('text.filter-label')
 		.data(colors)
 		.enter()
 		.append('text')
 		.attr('class', 'filter-label')
+		.attr('id', d => d)
 		.attr('x', function(d,i) {return i/8*width})
 		.attr('y', 30)
-		.attr('fill', 'black')
+		.attr('fill', d => d)
 		.attr('text-anchor', 'start')
 		.text(d => d)
-		.on('click', filterSelected);
+		.on('click', updateFilter);
+
+	// Flag display
+	updateFlagDisplay(mapdata);
 };
 
 function redraw()
@@ -190,6 +238,6 @@ window.addEventListener("resize", redraw);
 
 d3.json('data/merged_countries_simplified.json', function(err, data) {
 		// store map of countries
-		mapdata = data.objects.merged_countries.geometries;
+		// mapdata = data.objects.merged_countries.geometries;
 		createMap(data);
 });
