@@ -5,7 +5,7 @@ redraw();
 
 var mapdata = {};
 
-var flagimage = document.getElementById("imageid");
+// var flagimage = document.getElementById("imageid");
 
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
@@ -16,6 +16,11 @@ const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
 const shapes = ['Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
 
 const filt = d3.select('#filters').append('svg');
+
+// Define the div for the tooltip
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 var projection = d3.geoMercator()
 	.scale(300)
@@ -134,13 +139,23 @@ function createMap(data) {
 		.append("path")
 		.attr("id", function(d) { return d.properties.Name; })
 		.attr("d", path)
-		.on('mouseover', function(d) {
-			d3.select('#countryname')
-				.text(d.properties.Name);
-			flagimage.src=d.properties.ImageURL;
-			})
 		.attr("class", "country")
-		.on("click", countrySelected);
+		.on("click", countrySelected)
+		.on("mouseover", function(d) {
+		 div.transition()
+				 .duration(200)
+				 .style("opacity", .9);
+		 div.html(d.properties.Name + "<br/>" +
+		 			'<img src= "' + d.properties.ImageURL + '"' +
+					" height='50' width='auto' border='1'>")
+				 .style("left", (d3.event.pageX) + "px")
+				 .style("top", (d3.event.pageY + 25) + "px");
+		 })
+		 .on("mouseout", function(d) {
+				 div.transition()
+						 .duration(500)
+						 .style("opacity", 0);
+		 });
 
 	svg.call(zoom);
 
@@ -163,35 +178,12 @@ function redraw()
 	height = width * 0.6;
 };
 
-//var histo_margin = {top: 10, right: 30, bottom: 30, left: 40},
- //   histo_width = 460 - histo_margin.left - histo_margin.right,
-  //  histo_height = 400 - histo_margin.top - histo_margin.bottom;
-
-//var histo_svg = d3.select("#histoarea")
- //   .append("svg")
-  //    .attr("width", histo_width + histo_margin.left + histo_margin.right)
-   //   .attr("height", histo_height + histo_margin.top + histo_margin.bottom)
-    //.append("g")
-     // .attr("transform",
-      //"translate(" + histo_margin.left + "," + histo_margin.top + ")");
-  
-  // append the svg object to the body of the page
-//var histo_svg = d3.select("#histoarea")
- //   .append("svg")
-  //    .attr("width", hwidth + hmargin.left + hmargin.right)
-  //    .attr("height", hheight + hmargin.top + hmargin.bottom)
-  //  .append("g")
-   //   .attr("transform",
-    //        "translate(" + hmargin.left + "," + hmargin.top + ")");
-
-
-
 function updateHistograms()
 {
-	var selected_data = svg.selectAll("path.selected"); // selects all the countries highlighted ()
-			// now we have all the countries highlighted, we can use them to draw the histograms!
-			// just an example filter to see all the selected countries logged to console
-    
+    d3.select("#histoarea").selectAll("svg").remove();
+
+	var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
+
     var histo_data = [
         {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
         {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
@@ -202,66 +194,46 @@ function updateHistograms()
         {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()},
     ];
 
-    console.log(histo_data);
     var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
-    hwidth = 460 - hmargin.left - hmargin.right,
+    hwidth = 400 - hmargin.left - hmargin.right,
     hheight = 400 - hmargin.top - hmargin.bottom;
 
-    var max = d3.max(histo_data, function(d) {return d.count});
-    var x = d3.scaleLinear()
+    var max_val = d3.max(histo_data, function(d) {return d.count});
+
+    var x = d3.scaleBand()
       .domain(colors)
       .range([0, hwidth])
+      .padding(0.1);
 
     var y = d3.scaleLinear()
-      .domain([0, max])
+      .domain([0, max_val])
       .range([hheight, 0]);
     
-
-    var xAxis = d3.axisBottom(x)//tickFormat(function(d){ return d.x;});
-    //var xAxis = d3.svg.axis()
-    //.scale(x)
-    //.orient("bottom")
-    
     var hsvg = d3.select("#histoarea").append("svg")
-    .attr("width", hwidth + hmargin.left + hmargin.right)
-    .attr("height", hheight + hmargin.top + hmargin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + hmargin.left + "," + hmargin.top + ")");
+        .attr("width", hwidth + hmargin.left + hmargin.right)
+        .attr("height", hheight + hmargin.top + hmargin.bottom)
+        .append("g")
+        .attr("transform", 
+            "translate(" + hmargin.left + "," + hmargin.top + ")");
+    
+    hsvg.selectAll(".bar")
+          .data(histo_data)
+        .enter().append("rect")
+          .attr("class", "bar")
+        .attr("x", function(d) { return x(d.color); })
+        .attr("width", x.bandwidth())
+        .attr("y", function(d) { return y(d.count); })
+        .attr("height", function(d) { return hheight - y(d.count); })
+        .attr("fill", function(d) {return d.color});
 
-    var bar = hsvg.selectAll(".bar")
-    .data(histo_data)
-  .enter().append("g")
-    .attr("class", "bar")
+    // add the x Axis
+    hsvg.append("g")
+        .attr("transform", "translate(0," + hheight + ")")
+        .call(d3.axisBottom(x));
 
-    bar.append("rect")
-    .attr("x", 1)
-    .attr("width", 10)
-    .attr("height", function(d) { return hheight - y(d.count); })
-    .attr("fill", function(d) { return d.color});
-
-//bar.append("text")
- //   .attr("dy", ".75em")
-  //  .attr("y", -12)
-   // .attr("x", (x(data[0].dx) - x(0)) / 2)
-    //.attr("text-anchor", "middle")
-   // .text(function(d) { return formatCount(d.y); });
-
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + hheight + ")")
-    .call(xAxis);
-
-    console.log(histo_data);
-
-    //console.log(d3.sum(selected_data, function(d) {return d.Red;}));
-    //console.log(selected_data.filter(function(d) {return (d.properties.Red === 1);}).size());//, d => Number(d.properties.Red)));
-    //console.log(selected_data.size());
-    //selected_data.filter(function(d) {console.log(d.properties.Name);});   
-
-    selected_data.style("fill", function (d) {return d.properties.Mainhue});
-
-   // var counts = [d]
-
+    // add the y Axis
+    hsvg.append("g")
+        .call(d3.axisLeft(y));
 };
 
 window.addEventListener("resize", redraw);
