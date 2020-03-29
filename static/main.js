@@ -163,12 +163,105 @@ function redraw()
 	height = width * 0.6;
 };
 
-function 	updateHistograms()
+//var histo_margin = {top: 10, right: 30, bottom: 30, left: 40},
+ //   histo_width = 460 - histo_margin.left - histo_margin.right,
+  //  histo_height = 400 - histo_margin.top - histo_margin.bottom;
+
+//var histo_svg = d3.select("#histoarea")
+ //   .append("svg")
+  //    .attr("width", histo_width + histo_margin.left + histo_margin.right)
+   //   .attr("height", histo_height + histo_margin.top + histo_margin.bottom)
+    //.append("g")
+     // .attr("transform",
+      //"translate(" + histo_margin.left + "," + histo_margin.top + ")");
+  
+  // append the svg object to the body of the page
+//var histo_svg = d3.select("#histoarea")
+ //   .append("svg")
+  //    .attr("width", hwidth + hmargin.left + hmargin.right)
+  //    .attr("height", hheight + hmargin.top + hmargin.bottom)
+  //  .append("g")
+   //   .attr("transform",
+    //        "translate(" + hmargin.left + "," + hmargin.top + ")");
+
+
+
+function updateHistograms()
 {
-	svg.selectAll("path.selected") // selects all the countries highlighted ()
+	var selected_data = svg.selectAll("path.selected"); // selects all the countries highlighted ()
 			// now we have all the countries highlighted, we can use them to draw the histograms!
 			// just an example filter to see all the selected countries logged to console
-		 .filter(function(d) {console.log(d.properties.Name); return true;});
+    
+    var histo_data = [
+        {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
+        {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
+        {color:"Blue", count:selected_data.filter(function(d) {return (d.properties.Blue === 1);}).size()},
+        {color:"Gold", count:selected_data.filter(function(d) {return (d.properties.Gold === 1);}).size()},
+        {color:"White", count:selected_data.filter(function(d) {return (d.properties.White === 1);}).size()},
+        {color:"Black", count:selected_data.filter(function(d) {return (d.properties.Black === 1);}).size()},
+        {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()},
+    ];
+
+    console.log(histo_data);
+    var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
+    hwidth = 460 - hmargin.left - hmargin.right,
+    hheight = 400 - hmargin.top - hmargin.bottom;
+
+    var max = d3.max(histo_data, function(d) {return d.count});
+    var x = d3.scaleLinear()
+      .domain(colors)
+      .range([0, hwidth])
+
+    var y = d3.scaleLinear()
+      .domain([0, max])
+      .range([hheight, 0]);
+    
+
+    var xAxis = d3.axisBottom(x)//tickFormat(function(d){ return d.x;});
+    //var xAxis = d3.svg.axis()
+    //.scale(x)
+    //.orient("bottom")
+    
+    var hsvg = d3.select("#histoarea").append("svg")
+    .attr("width", hwidth + hmargin.left + hmargin.right)
+    .attr("height", hheight + hmargin.top + hmargin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + hmargin.left + "," + hmargin.top + ")");
+
+    var bar = hsvg.selectAll(".bar")
+    .data(histo_data)
+  .enter().append("g")
+    .attr("class", "bar")
+
+    bar.append("rect")
+    .attr("x", 1)
+    .attr("width", 10)
+    .attr("height", function(d) { return hheight - y(d.count); })
+    .attr("fill", function(d) { return d.color});
+
+//bar.append("text")
+ //   .attr("dy", ".75em")
+  //  .attr("y", -12)
+   // .attr("x", (x(data[0].dx) - x(0)) / 2)
+    //.attr("text-anchor", "middle")
+   // .text(function(d) { return formatCount(d.y); });
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + hheight + ")")
+    .call(xAxis);
+
+    console.log(histo_data);
+
+    //console.log(d3.sum(selected_data, function(d) {return d.Red;}));
+    //console.log(selected_data.filter(function(d) {return (d.properties.Red === 1);}).size());//, d => Number(d.properties.Red)));
+    //console.log(selected_data.size());
+    //selected_data.filter(function(d) {console.log(d.properties.Name);});   
+
+    selected_data.style("fill", function (d) {return d.properties.Mainhue});
+
+   // var counts = [d]
+
 };
 
 window.addEventListener("resize", redraw);

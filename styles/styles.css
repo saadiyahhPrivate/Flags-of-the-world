@@ -30,6 +30,11 @@ svg {
   width: 100%;
 }
 
+histo_svg {
+    height: 100%;
+  width: 100%;
+}
+
 .roundedcorners {
   border: 1px solid #ccc;
   border-radius: 15px;
