@@ -36,19 +36,14 @@ var path = d3.geoPath()
 function countrySelected()
 {
 	var d = d3.select(this);
-	if (d.classed('selected')) {
-			d.classed('selected', false);
-	} else {
-			d.classed('selected', true);
-	}
+	d.classed('selected', !d.classed('selected'));
 
 	updateHistograms();
-	// updateFlagDisplay();
+	updateFlagDisplay();
 };
 
 function updateFilter() {
 	var d = d3.select(this);
-	var selectedColor = this.textContent;
 
 	// update button visual
 	d.classed('selected', !d.classed('selected'));
@@ -71,30 +66,42 @@ function updateFilter() {
 		})
 	}
 	
-	// update flag display on right
-	updateFlagDisplay(selected)
+	// update histograms and flag display
+	updateHistograms();
+	updateFlagDisplay();
 }
 
-function updateFlagDisplay(selection) {
+function updateFlagDisplay() {
 	// var selected = svg.selectAll('path.selected')
 	// if (selected.empty()) {selected = svg.selectAll('path')};
 	// console.log(selected);
 
-	// TODO need to figure out how to bind svg map data with flag data
 
-	d3.selectAll('#flagdisplay img').remove()
+	// d3.selectAll('#flagdisplay img').remove()
 
-	var flags = d3.select('#flagdisplay')
-			.selectAll('img')
-			// .data(selected, function(d) {return d ? d.properties.ImageURL : this.src})
-			.data(selection)
+	// var flags = d3.select('#flagdisplay')
+	// 		.selectAll('img')
+	// 		// .data(selected, function(d) {return d ? d.properties.ImageURL : this.src})
+	// 		.data(selection)
 
-	flags
-		.enter()
-		.append('img')
-		.attr('src', d => d.properties.ImageURL)
-		.attr('height', 20)
-		.attr('width', 30)
+	// flags
+	// 	.enter()
+	// 	.append('img')
+	// 	.attr('src', d => d.properties.ImageURL)
+	// 	.attr('height', 20)
+	// 	.attr('width', 30)
+
+	d3.selectAll('#flagdisplay img')
+		.style('display', d => {
+			// var x = d3.select('#'+d.properties.Name.split(' ').join(''))
+			// return (x.classed('selected') ? 'inline' : 'none')
+			return (isSelected(d) ? 'inline' : 'none')
+		})
+
+}
+
+function isSelected(d) {
+	return d3.select('#'+d.properties.Name.split(' ').join('')).classed('selected')
 }
 
 function zoomed() {
@@ -115,7 +122,7 @@ function clearSelections()
 									function (el) {el.checked = false});
 
 	updateHistograms();
-	updateFlagDisplay(mapdata);
+	updateFlagDisplay();
 };
 
 function updateLandmassSelections(landmasses_selected, landmasses_unselected)
@@ -129,7 +136,7 @@ function updateLandmassSelections(landmasses_selected, landmasses_unselected)
 		 .classed('selected', false);
 
 	updateHistograms();
-	// updateFlagDisplay();
+	updateFlagDisplay();
 };
 
 var landmasses = new Map(
@@ -202,6 +209,7 @@ function createMap(data) {
 	svg.call(zoom);
 
 	// Filters
+	// TODO add to html
 	d3.select('#filters').append('svg')
 		.selectAll('text.filter-label')
 		.data(colors)
@@ -217,7 +225,15 @@ function createMap(data) {
 		.on('click', updateFilter);
 
 	// Flag display
-    updateFlagDisplay(mapdata);
+	d3.select('#flagdisplay').selectAll('img')
+		.data(mapdata)
+		.enter()
+		.append('img')
+		.attr('src', d => d.properties.ImageURL)
+		.attr('height', 20)
+		.attr('width', 30)
+		.style('display', 'none')
+
     updateHistograms();
 };
 
