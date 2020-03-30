@@ -17,6 +17,11 @@ div.tooltip {
     pointer-events: none;
 }
 
+#flagdisplay {
+  height:200px;
+  overflow:auto;
+}
+
 .country.selected:hover {
     fill: red;
     opacity:1;

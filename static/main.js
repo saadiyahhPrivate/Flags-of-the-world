@@ -3,8 +3,6 @@ var width  = 0;
 var height = 0;
 redraw();
 
-// var flagimage = document.getElementById("imageid");
-
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
 	.attr('class', "roundedcornersmap");
@@ -13,7 +11,7 @@ const svg = d3.select('#map').append('svg')
 const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
 // const colors = new Map(
 // 	[["red", 1],["green",2],["blue",3],["gold",4],["white",5],["black",6],["orange",7]]);
-const shapes = ['Bars', 'Stripes', 'Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 
+const shapes = ['Bars', 'Stripes', 'Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars',
 				'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
 // const shapes = new Map(
 // 	[["circles", 1],["crosses",2],["saltires",3],["quarters",4],["sunstars",5],["crescent",6],["triangle",7],["icon",8],["animate",9],["text",10]]);
@@ -70,7 +68,7 @@ function updateFilter() {
 				.classed('selected', true)
 		})
 	}
-	
+
 	// update histograms and flag display
 	updateHistograms();
 	updateFlagDisplay();
@@ -159,6 +157,7 @@ function createMap(data) {
 		.enter()
 		.append('img')
 		.attr('src', d => d.properties.ImageURL)
+		.attr("style", "padding: 2px;")
 		.attr('height', 20)
 		.attr('width', 30)
 		.style('display', 'none')
@@ -189,66 +188,66 @@ function redraw()
 
 function updateHistograms()
 {
-    d3.select("#histoarea").selectAll("svg").remove();
+  d3.select("#histoarea").selectAll("svg").remove();
 
-	var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
+  var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
 
-    var histo_data = [
-        {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
-        {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
-        {color:"Blue", count:selected_data.filter(function(d) {return (d.properties.Blue === 1);}).size()},
-        {color:"Gold", count:selected_data.filter(function(d) {return (d.properties.Gold === 1);}).size()},
-        {color:"White", count:selected_data.filter(function(d) {return (d.properties.White === 1);}).size()},
-        {color:"Black", count:selected_data.filter(function(d) {return (d.properties.Black === 1);}).size()},
-        {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()},
-    ];
+  var histo_data = [
+      {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
+      {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
+      {color:"Blue", count:selected_data.filter(function(d) {return (d.properties.Blue === 1);}).size()},
+      {color:"Gold", count:selected_data.filter(function(d) {return (d.properties.Gold === 1);}).size()},
+      {color:"White", count:selected_data.filter(function(d) {return (d.properties.White === 1);}).size()},
+      {color:"Black", count:selected_data.filter(function(d) {return (d.properties.Black === 1);}).size()},
+      {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()},
+  ];
 
-    var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
-    hwidth = 400 - hmargin.left - hmargin.right,
-    hheight = 400 - hmargin.top - hmargin.bottom;
+	var div_width = d3.select("#histoarea").node().getBoundingClientRect().width;
+  var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
+  hwidth = div_width - hmargin.left - hmargin.right,
+  hheight = div_width - hmargin.top - hmargin.bottom;
 
-    var max_val = d3.max(histo_data, function(d) {return d.count});
+  var max_val = d3.max(histo_data, function(d) {return d.count});
 
-    var x = d3.scaleBand()
-      .domain(colors)
-      .range([0, hwidth])
-      .padding(0.1);
+  var x = d3.scaleBand()
+    .domain(colors)
+    .range([0, hwidth])
+    .padding(0.1);
 
-    var y = d3.scaleLinear()
-      .domain([0, max_val])
-      .range([hheight, 0]);
-    
-    var hsvg = d3.select("#histoarea").append("svg")
-        .attr("width", hwidth + hmargin.left + hmargin.right)
-        .attr("height", hheight + hmargin.top + hmargin.bottom)
-        .append("g")
-        .attr("transform", 
-            "translate(" + hmargin.left + "," + hmargin.top + ")");
-    
-    hsvg.selectAll(".bar")
-          .data(histo_data)
-        .enter().append("rect")
-          .attr("class", "bar")
-        .attr("x", function(d) { return x(d.color); })
-        .attr("width", x.bandwidth())
-        .attr("y", function(d) { return y(d.count); })
-        .attr("height", function(d) { return hheight - y(d.count); })
-        .attr("fill", function(d) {return d.color});
+  var y = d3.scaleLinear()
+    .domain([0, max_val])
+    .range([hheight, 0]);
 
-    // add the x Axis
-    hsvg.append("g")
-        .attr("transform", "translate(0," + hheight + ")")
-        .call(d3.axisBottom(x));
+  var hsvg = d3.select("#histoarea").append("svg")
+      .attr("width", hwidth + hmargin.left + hmargin.right)
+      .attr("height", hheight + hmargin.top + hmargin.bottom)
+      .append("g")
+      .attr("transform",
+          "translate(" + hmargin.left + "," + hmargin.top + ")");
 
-    // add the y Axis
-    hsvg.append("g")
-        .call(d3.axisLeft(y));
+  hsvg.selectAll(".bar")
+        .data(histo_data)
+      .enter().append("rect")
+        .attr("class", "bar")
+      .attr("x", function(d) { return x(d.color); })
+      .attr("width", x.bandwidth())
+      .attr("y", function(d) { return y(d.count); })
+      .attr("height", function(d) { return hheight - y(d.count); })
+      .attr("fill", function(d) {return d.color});
+
+  // add the x Axis
+  hsvg.append("g")
+      .attr("transform", "translate(0," + hheight + ")")
+      .call(d3.axisBottom(x));
+
+  // add the y Axis
+  hsvg.append("g")
+      .call(d3.axisLeft(y));
 };
 
 window.addEventListener("resize", redraw);
+window.addEventListener("resize", updateHistograms);
 
 d3.json('data/merged_countries_simplified.json', function(err, data) {
-		// store map of countries
-		// mapdata = data.objects.merged_countries.geometries;
 		createMap(data);
 });
