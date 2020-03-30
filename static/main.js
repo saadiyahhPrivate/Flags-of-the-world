@@ -229,6 +229,7 @@ function redraw()
 
 function updateHistograms()
 {
+    // Color Flag Histogram
     d3.select("#histoarea").selectAll("svg").remove();
 
 	var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
@@ -240,8 +241,10 @@ function updateHistograms()
         {color:"Gold", count:selected_data.filter(function(d) {return (d.properties.Gold === 1);}).size()},
         {color:"White", count:selected_data.filter(function(d) {return (d.properties.White === 1);}).size()},
         {color:"Black", count:selected_data.filter(function(d) {return (d.properties.Black === 1);}).size()},
-        {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()},
+        {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()}
     ];
+
+    console.log(histo_data);
 
     var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
     hwidth = 400 - hmargin.left - hmargin.right,
@@ -275,14 +278,40 @@ function updateHistograms()
         .attr("height", function(d) { return hheight - y(d.count); })
         .attr("fill", function(d) {return d.color});
 
-    // add the x Axis
     hsvg.append("g")
         .attr("transform", "translate(0," + hheight + ")")
         .call(d3.axisBottom(x));
 
-    // add the y Axis
     hsvg.append("g")
         .call(d3.axisLeft(y));
+
+    // Shape Flag Histogram
+
+    var hsvg2 = d3.select("#histoarea").append("svg")
+    .attr("width", hwidth + hmargin.left + hmargin.right)
+    .attr("height", hheight + hmargin.top + hmargin.bottom)
+    .append("g")
+    .attr("transform", 
+        "translate(" + hmargin.left + "," + hmargin.top + ")");
+
+    hsvg2.selectAll(".bar")
+      .data(histo_data)
+    .enter().append("rect")
+      .attr("class", "bar")
+    .attr("x", function(d) { return x(d.color); })
+    .attr("width", x.bandwidth())
+    .attr("y", function(d) { return y(d.count); })
+    .attr("height", function(d) { return hheight - y(d.count); })
+    .attr("fill", function(d) {return d.color});
+
+    hsvg2.append("g")
+    .attr("transform", "translate(0," + hheight + ")")
+    .call(d3.axisBottom(x));
+
+    hsvg2.append("g")
+    .call(d3.axisLeft(y));
+
+
 };
 
 window.addEventListener("resize", redraw);
