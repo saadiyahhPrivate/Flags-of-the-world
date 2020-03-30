@@ -2,10 +2,15 @@ body {
   top: 0px
   bottom: 0px;
   margin: 0;
-  padding: 3%;
+  padding: 1%;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
   color: #09511F;
   background-color:#85C1E9; /* general page background color TBD */
+}
+
+#header1, #header2
+{
+    display:inline;
 }
 
 div.tooltip {
@@ -26,14 +31,10 @@ div.tooltip {
   overflow:auto;
 }
 
-.country.selected:hover {
-    /*fill: red;*/
-    /*opacity:1;*/
-}
 .country:hover {
     /*fill: red;*/
     /*opacity: 0.3;*/
-    fill-opacity: .5;
+    fill-opacity: 1;
 }
 
 .background {
@@ -44,7 +45,7 @@ div.tooltip {
 }
 
 #landmasschoices {
-  opacity: 0.7;
+  opacity: 0.8;
   font-size: 12px;
 }
 
@@ -75,18 +76,18 @@ svg {
 #columnleft {
   float: left;
   width: 70%;
-  height: 100vh;
+  height: 100%;
 }
 
 #columnright {
   float: left;
   width: 25%;
-  height: 100vh;
+  height: 100%;
 }
 
 .country{
   /*fill: #cde;*/
-  fill-opacity: .2;
+  fill-opacity: .08;
   stroke: grey;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -94,7 +95,7 @@ svg {
 
 .selected {
   /*fill: #89a;*/
-  fill-opacity: .7;
+  fill-opacity: 1;
 }
 
 .map-overlay {

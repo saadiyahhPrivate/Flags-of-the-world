@@ -137,7 +137,7 @@ function createMap(data) {
 		.on("mouseover", function(d) {
 		 div.transition()
 				.duration(200)
-				.style("opacity", .9);
+				.style("opacity", 0.9);
 		 div.html(d.properties.Name + "<br/>" +
 		 			'<img src= "' + d.properties.ImageURL + '"' +
 					" height='50' width='auto' border='1'>")
@@ -165,7 +165,7 @@ function createMap(data) {
 		.on('mouseover', function(d) {
 			div.transition()
 				.duration(200)
-				.style("opacity", .9);
+				.style("opacity", 1);
 		 	div.html(d.properties.Name + "<br/>" +
 		 			'<img src= "' + d.properties.ImageURL + '"' +
 					" height='50' width='auto' border='1'>")
@@ -184,7 +184,7 @@ function createMap(data) {
 function redraw()
 {
 	width = d3.select('#map').node().getBoundingClientRect().width;
-	height = width * 0.6;
+	height = width * 0.55;
 };
 
 function updateHistograms()
@@ -204,9 +204,10 @@ function updateHistograms()
         {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()}
     ];
 
-    var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
-    hwidth = 400 - hmargin.left - hmargin.right,
-    hheight = 400 - hmargin.top - hmargin.bottom;
+		var div_width = d3.select('#histoarea').node().getBoundingClientRect().width;
+    var hmargin = {top: 10, right: 30, bottom: 50, left: 40},
+    hwidth = div_width - hmargin.left - hmargin.right,
+    hheight = (div_width * 0.65) - hmargin.top - hmargin.bottom;
 
     var max_val = d3.max(color_data, function(d) {return d.count});
 
@@ -218,14 +219,14 @@ function updateHistograms()
     var y = d3.scaleLinear()
       .domain([0, max_val])
       .range([hheight, 0]);
-    
+
     var hsvg = d3.select("#histoarea").append("svg")
         .attr("width", hwidth + hmargin.left + hmargin.right)
         .attr("height", hheight + hmargin.top + hmargin.bottom)
         .append("g")
-        .attr("transform", 
+        .attr("transform",
             "translate(" + hmargin.left + "," + hmargin.top + ")");
-    
+
     hsvg.selectAll(".bar")
           .data(color_data)
         .enter().append("rect")
@@ -240,18 +241,23 @@ function updateHistograms()
 
     hsvg.append("g")
         .attr("transform", "translate(0," + hheight + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+				.selectAll("text")
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-55)");
 
     hsvg.append("g")
         .call(d3.axisLeft(y));
-    
+
     hsvg.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - hmargin.left)
         .attr("x",0 - (hheight / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Count");     
+        .text("# of Countries");
 
     // Shape Flag Histogram
 
@@ -285,7 +291,7 @@ function updateHistograms()
     .attr("width", hwidth + hmargin.left + hmargin.right)
     .attr("height", hheight + hmargin.top + hmargin.bottom)
     .append("g")
-    .attr("transform", 
+    .attr("transform",
         "translate(" + hmargin.left + "," + hmargin.top + ")");
 
     hsvg2.selectAll(".bar")
@@ -302,7 +308,12 @@ function updateHistograms()
 
     hsvg2.append("g")
     .attr("transform", "translate(0," + hheight + ")")
-    .call(d3.axisBottom(x2));
+    .call(d3.axisBottom(x2))
+		.selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-55)");
 
     hsvg2.append("g")
     .call(d3.axisLeft(y2));
@@ -313,7 +324,7 @@ function updateHistograms()
         .attr("x",0 - (hheight / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Count");  
+        .text("# of Countries");
 };
 
 window.addEventListener("resize", redraw);
