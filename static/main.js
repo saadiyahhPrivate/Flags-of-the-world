@@ -3,8 +3,6 @@ var width  = 0;
 var height = 0;
 redraw();
 
-// var flagimage = document.getElementById("imageid");
-
 const svg = d3.select('#map').append('svg')
 	.attr('width', width)
 	.attr('class', "roundedcornersmap");
@@ -13,7 +11,7 @@ const svg = d3.select('#map').append('svg')
 const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
 // const colors = new Map(
 // 	[["red", 1],["green",2],["blue",3],["gold",4],["white",5],["black",6],["orange",7]]);
-const shapes = ['Bars', 'Stripes', 'Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars', 
+const shapes = ['Bars', 'Stripes', 'Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars',
 				'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
 // const shapes = new Map(
 // 	[["circles", 1],["crosses",2],["saltires",3],["quarters",4],["sunstars",5],["crescent",6],["triangle",7],["icon",8],["animate",9],["text",10]]);
@@ -70,7 +68,7 @@ function updateFilter() {
 				.classed('selected', true)
 		})
 	}
-	
+
 	// update histograms and flag display
 	updateHistograms();
 	updateFlagDisplay();
@@ -159,6 +157,7 @@ function createMap(data) {
 		.enter()
 		.append('img')
 		.attr('src', d => d.properties.ImageURL)
+		.attr("style", "padding: 2px;")
 		.attr('height', 20)
 		.attr('width', 30)
 		.style('display', 'none')
@@ -194,7 +193,7 @@ function updateHistograms()
 
 	var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
 
-    var histo_data = [
+    var color_data = [
         {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
         {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
         {color:"Blue", count:selected_data.filter(function(d) {return (d.properties.Blue === 1);}).size()},
@@ -204,13 +203,11 @@ function updateHistograms()
         {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()}
     ];
 
-    console.log(histo_data);
-
     var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
     hwidth = 400 - hmargin.left - hmargin.right,
     hheight = 400 - hmargin.top - hmargin.bottom;
 
-    var max_val = d3.max(histo_data, function(d) {return d.count});
+    var max_val = d3.max(color_data, function(d) {return d.count});
 
     var x = d3.scaleBand()
       .domain(colors)
@@ -229,7 +226,7 @@ function updateHistograms()
             "translate(" + hmargin.left + "," + hmargin.top + ")");
     
     hsvg.selectAll(".bar")
-          .data(histo_data)
+          .data(color_data)
         .enter().append("rect")
           .attr("class", "bar")
         .attr("x", function(d) { return x(d.color); })
@@ -244,8 +241,42 @@ function updateHistograms()
 
     hsvg.append("g")
         .call(d3.axisLeft(y));
+    
+    hsvg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - hmargin.left)
+        .attr("x",0 - (hheight / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Count");     
 
     // Shape Flag Histogram
+
+    var shapes_data = [
+        {shape:"Bars", count:selected_data.filter(function(d) {return (d.properties.Bars !== 0);}).size()},
+        {shape:"Stripes", count:selected_data.filter(function(d) {return (d.properties.Stripes !== 0);}).size()},
+        {shape:"Circles", count:selected_data.filter(function(d) {return (d.properties.Circles !== 0);}).size()},
+        {shape:"Crosses", count:selected_data.filter(function(d) {return (d.properties.Crosses !== 0);}).size()},
+        {shape:"Saltires", count:selected_data.filter(function(d) {return (d.properties.Saltires !== 0);}).size()},
+        {shape:"Quarters", count:selected_data.filter(function(d) {return (d.properties.Quarters !== 0);}).size()},
+        {shape:"Sunstars", count:selected_data.filter(function(d) {return (d.properties.Sunstars !== 0);}).size()},
+        {shape:"Crescent", count:selected_data.filter(function(d) {return (d.properties.Crescent !== 0);}).size()},
+        {shape:"Triangle", count:selected_data.filter(function(d) {return (d.properties.Triangle !== 0);}).size()},
+        {shape:"Icon", count:selected_data.filter(function(d) {return (d.properties.Icon !== 0);}).size()},
+        {shape:"Animate", count:selected_data.filter(function(d) {return (d.properties.Animate !== 0);}).size()},
+        {shape:"Text", count:selected_data.filter(function(d) {return (d.properties.Text !== 0);}).size()}
+    ];
+
+    var max_val2 = d3.max(shapes_data, function(d) {return d.count});
+
+    var x2 = d3.scaleBand()
+      .domain(shapes)
+      .range([0, hwidth])
+      .padding(0.1);
+
+    var y2 = d3.scaleLinear()
+      .domain([0, max_val2])
+      .range([hheight, 0]);
 
     var hsvg2 = d3.select("#histoarea").append("svg")
     .attr("width", hwidth + hmargin.left + hmargin.right)
@@ -255,29 +286,33 @@ function updateHistograms()
         "translate(" + hmargin.left + "," + hmargin.top + ")");
 
     hsvg2.selectAll(".bar")
-      .data(histo_data)
+      .data(shapes_data)
     .enter().append("rect")
       .attr("class", "bar")
-    .attr("x", function(d) { return x(d.color); })
-    .attr("width", x.bandwidth())
-    .attr("y", function(d) { return y(d.count); })
-    .attr("height", function(d) { return hheight - y(d.count); })
-    .attr("fill", function(d) {return d.color});
+    .attr("x", function(d) { return x2(d.shape); })
+    .attr("width", x2.bandwidth())
+    .attr("y", function(d) { return y2(d.count); })
+    .attr("height", function(d) { return hheight - y2(d.count); });
 
     hsvg2.append("g")
     .attr("transform", "translate(0," + hheight + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x2));
 
     hsvg2.append("g")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y2));
 
-
+    hsvg2.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - hmargin.left)
+        .attr("x",0 - (hheight / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Count");  
 };
 
 window.addEventListener("resize", redraw);
+window.addEventListener("resize", updateHistograms);
 
 d3.json('data/merged_countries_simplified.json', function(err, data) {
-		// store map of countries
-		// mapdata = data.objects.merged_countries.geometries;
 		createMap(data);
 });
