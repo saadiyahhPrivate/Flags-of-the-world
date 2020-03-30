@@ -233,7 +233,9 @@ function updateHistograms()
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.count); })
         .attr("height", function(d) { return hheight - y(d.count); })
-        .attr("fill", function(d) {return d.color});
+        .attr("fill", function(d) {return d.color})
+        .style("stroke", "black")
+        .style("stroke-width", 1);
 
     hsvg.append("g")
         .attr("transform", "translate(0," + hheight + ")")
@@ -292,7 +294,10 @@ function updateHistograms()
     .attr("x", function(d) { return x2(d.shape); })
     .attr("width", x2.bandwidth())
     .attr("y", function(d) { return y2(d.count); })
-    .attr("height", function(d) { return hheight - y2(d.count); });
+    .attr("height", function(d) { return hheight - y2(d.count); })
+    .attr("fill", "steelblue")
+    .style("stroke", "black")
+    .style("stroke-width", 1);
 
     hsvg2.append("g")
     .attr("transform", "translate(0," + hheight + ")")
