@@ -189,61 +189,131 @@ function redraw()
 
 function updateHistograms()
 {
-  d3.select("#histoarea").selectAll("svg").remove();
+    // Color Flag Histogram
+    d3.select("#histoarea").selectAll("svg").remove();
 
-  var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
+	var selected_data = svg.selectAll("path.selected"); // selects all the countries currently highlighted
 
-  var histo_data = [
-      {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
-      {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
-      {color:"Blue", count:selected_data.filter(function(d) {return (d.properties.Blue === 1);}).size()},
-      {color:"Gold", count:selected_data.filter(function(d) {return (d.properties.Gold === 1);}).size()},
-      {color:"White", count:selected_data.filter(function(d) {return (d.properties.White === 1);}).size()},
-      {color:"Black", count:selected_data.filter(function(d) {return (d.properties.Black === 1);}).size()},
-      {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()},
-  ];
+    var color_data = [
+        {color:"Red", count:selected_data.filter(function(d) {return (d.properties.Red === 1);}).size()},
+        {color:"Green", count:selected_data.filter(function(d) {return (d.properties.Green === 1);}).size()},
+        {color:"Blue", count:selected_data.filter(function(d) {return (d.properties.Blue === 1);}).size()},
+        {color:"Gold", count:selected_data.filter(function(d) {return (d.properties.Gold === 1);}).size()},
+        {color:"White", count:selected_data.filter(function(d) {return (d.properties.White === 1);}).size()},
+        {color:"Black", count:selected_data.filter(function(d) {return (d.properties.Black === 1);}).size()},
+        {color:"Orange", count:selected_data.filter(function(d) {return (d.properties.Orange === 1);}).size()}
+    ];
 
-	var div_width = d3.select("#histoarea").node().getBoundingClientRect().width;
-  var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
-  hwidth = div_width - hmargin.left - hmargin.right,
-  hheight = div_width - hmargin.top - hmargin.bottom;
+    var hmargin = {top: 10, right: 30, bottom: 30, left: 40},
+    hwidth = 400 - hmargin.left - hmargin.right,
+    hheight = 400 - hmargin.top - hmargin.bottom;
 
-  var max_val = d3.max(histo_data, function(d) {return d.count});
+    var max_val = d3.max(color_data, function(d) {return d.count});
 
-  var x = d3.scaleBand()
-    .domain(colors)
-    .range([0, hwidth])
-    .padding(0.1);
+    var x = d3.scaleBand()
+      .domain(colors)
+      .range([0, hwidth])
+      .padding(0.1);
 
-  var y = d3.scaleLinear()
-    .domain([0, max_val])
-    .range([hheight, 0]);
+    var y = d3.scaleLinear()
+      .domain([0, max_val])
+      .range([hheight, 0]);
+    
+    var hsvg = d3.select("#histoarea").append("svg")
+        .attr("width", hwidth + hmargin.left + hmargin.right)
+        .attr("height", hheight + hmargin.top + hmargin.bottom)
+        .append("g")
+        .attr("transform", 
+            "translate(" + hmargin.left + "," + hmargin.top + ")");
+    
+    hsvg.selectAll(".bar")
+          .data(color_data)
+        .enter().append("rect")
+          .attr("class", "bar")
+        .attr("x", function(d) { return x(d.color); })
+        .attr("width", x.bandwidth())
+        .attr("y", function(d) { return y(d.count); })
+        .attr("height", function(d) { return hheight - y(d.count); })
+        .attr("fill", function(d) {return d.color})
+        .style("stroke", "black")
+        .style("stroke-width", 1);
 
-  var hsvg = d3.select("#histoarea").append("svg")
-      .attr("width", hwidth + hmargin.left + hmargin.right)
-      .attr("height", hheight + hmargin.top + hmargin.bottom)
-      .append("g")
-      .attr("transform",
-          "translate(" + hmargin.left + "," + hmargin.top + ")");
+    hsvg.append("g")
+        .attr("transform", "translate(0," + hheight + ")")
+        .call(d3.axisBottom(x));
 
-  hsvg.selectAll(".bar")
-        .data(histo_data)
-      .enter().append("rect")
-        .attr("class", "bar")
-      .attr("x", function(d) { return x(d.color); })
-      .attr("width", x.bandwidth())
-      .attr("y", function(d) { return y(d.count); })
-      .attr("height", function(d) { return hheight - y(d.count); })
-      .attr("fill", function(d) {return d.color});
+    hsvg.append("g")
+        .call(d3.axisLeft(y));
+    
+    hsvg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - hmargin.left)
+        .attr("x",0 - (hheight / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Count");     
 
-  // add the x Axis
-  hsvg.append("g")
-      .attr("transform", "translate(0," + hheight + ")")
-      .call(d3.axisBottom(x));
+    // Shape Flag Histogram
 
-  // add the y Axis
-  hsvg.append("g")
-      .call(d3.axisLeft(y));
+    var shapes_data = [
+        {shape:"Bars", count:selected_data.filter(function(d) {return (d.properties.Bars !== 0);}).size()},
+        {shape:"Stripes", count:selected_data.filter(function(d) {return (d.properties.Stripes !== 0);}).size()},
+        {shape:"Circles", count:selected_data.filter(function(d) {return (d.properties.Circles !== 0);}).size()},
+        {shape:"Crosses", count:selected_data.filter(function(d) {return (d.properties.Crosses !== 0);}).size()},
+        {shape:"Saltires", count:selected_data.filter(function(d) {return (d.properties.Saltires !== 0);}).size()},
+        {shape:"Quarters", count:selected_data.filter(function(d) {return (d.properties.Quarters !== 0);}).size()},
+        {shape:"Sunstars", count:selected_data.filter(function(d) {return (d.properties.Sunstars !== 0);}).size()},
+        {shape:"Crescent", count:selected_data.filter(function(d) {return (d.properties.Crescent !== 0);}).size()},
+        {shape:"Triangle", count:selected_data.filter(function(d) {return (d.properties.Triangle !== 0);}).size()},
+        {shape:"Icon", count:selected_data.filter(function(d) {return (d.properties.Icon !== 0);}).size()},
+        {shape:"Animate", count:selected_data.filter(function(d) {return (d.properties.Animate !== 0);}).size()},
+        {shape:"Text", count:selected_data.filter(function(d) {return (d.properties.Text !== 0);}).size()}
+    ];
+
+    var max_val2 = d3.max(shapes_data, function(d) {return d.count});
+
+    var x2 = d3.scaleBand()
+      .domain(shapes)
+      .range([0, hwidth])
+      .padding(0.1);
+
+    var y2 = d3.scaleLinear()
+      .domain([0, max_val2])
+      .range([hheight, 0]);
+
+    var hsvg2 = d3.select("#histoarea").append("svg")
+    .attr("width", hwidth + hmargin.left + hmargin.right)
+    .attr("height", hheight + hmargin.top + hmargin.bottom)
+    .append("g")
+    .attr("transform", 
+        "translate(" + hmargin.left + "," + hmargin.top + ")");
+
+    hsvg2.selectAll(".bar")
+      .data(shapes_data)
+    .enter().append("rect")
+      .attr("class", "bar")
+    .attr("x", function(d) { return x2(d.shape); })
+    .attr("width", x2.bandwidth())
+    .attr("y", function(d) { return y2(d.count); })
+    .attr("height", function(d) { return hheight - y2(d.count); })
+    .attr("fill", "steelblue")
+    .style("stroke", "black")
+    .style("stroke-width", 1);
+
+    hsvg2.append("g")
+    .attr("transform", "translate(0," + hheight + ")")
+    .call(d3.axisBottom(x2));
+
+    hsvg2.append("g")
+    .call(d3.axisLeft(y2));
+
+    hsvg2.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - hmargin.left)
+        .attr("x",0 - (hheight / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Count");  
 };
 
 window.addEventListener("resize", redraw);
