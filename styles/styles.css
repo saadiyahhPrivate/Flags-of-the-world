@@ -1,7 +1,11 @@
 body {
   top: 0px
   bottom: 0px;
-  background-color:grey; /* general page background color TBD */
+  margin: 0;
+  padding: 3%;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  color: #09511F;
+  background-color:#85C1E9; /* general page background color TBD */
 }
 
 div.tooltip {
@@ -23,16 +27,17 @@ div.tooltip {
 }
 
 .country.selected:hover {
-    fill: red;
-    opacity:1;
+    /*fill: red;*/
+    /*opacity:1;*/
 }
 .country:hover {
-    fill: red;
-    opacity: 0.3;
+    /*fill: red;*/
+    /*opacity: 0.3;*/
+    fill-opacity: .5;
 }
 
 .background {
-  fill: grey; /* map area background color */
+  fill: lightgrey; /* map area background color */
   pointer-events: all;
   height: 100%;
   width: 100%;
@@ -44,7 +49,7 @@ div.tooltip {
 }
 
 #titlebar {
-  font-size: 50px;
+  /*font-size: 50px;*/
   padding: 5px;
 }
 
@@ -80,14 +85,16 @@ svg {
 }
 
 .country{
-  fill: #cde;
+  /*fill: #cde;*/
+  fill-opacity: .2;
   stroke: grey;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 
 .selected {
-  fill: #89a;
+  /*fill: #89a;*/
+  fill-opacity: .7;
 }
 
 .map-overlay {

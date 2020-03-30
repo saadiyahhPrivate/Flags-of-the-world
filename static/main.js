@@ -132,6 +132,7 @@ function createMap(data) {
 		.attr("id", function(d) { return d.properties.Name.split(' ').join(''); })
 		.attr("d", path)
 		.attr("class", "country")
+		.attr('fill', d => d.properties.Mainhue)
 		.on("click", countrySelected)
 		.on("mouseover", function(d) {
 		 div.transition()
