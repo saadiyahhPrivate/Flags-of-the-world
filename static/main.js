@@ -9,12 +9,8 @@ const svg = d3.select('#map').append('svg')
 
 // Filter-related variables
 const colors = ['Red', 'Green', 'Blue', 'Gold', 'White', 'Black', 'Orange']
-// const colors = new Map(
-// 	[["red", 1],["green",2],["blue",3],["gold",4],["white",5],["black",6],["orange",7]]);
 const shapes = ['Bars', 'Stripes', 'Circles', 'Crosses', 'Saltires', 'Quarters', 'Sunstars',
-				'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
-// const shapes = new Map(
-// 	[["circles", 1],["crosses",2],["saltires",3],["quarters",4],["sunstars",5],["crescent",6],["triangle",7],["icon",8],["animate",9],["text",10]]);
+								'Crescent', 'Triangle', 'Icon', 'Animate', 'Text']
 const landmasses = new Map(
 	[["north-america", 1],["south-america",2],["europe",3],["africa",4],["asia",5],["oceania",6]]);
 
@@ -145,7 +141,7 @@ function createMap(data) {
 				.style("opacity", 0.9);
 		 div.html(d.properties.Name + "<br/>" +
 		 			'<img src= "' + d.properties.ImageURL + '"' +
-					" height='50' width='auto' border='1'>")
+					" height='100' width='auto' border='1'>")
 				.style("left", (d3.event.pageX) + "px")
 				.style("top", (d3.event.pageY + 25) + "px");
 		 })
@@ -173,9 +169,9 @@ function createMap(data) {
 				.style("opacity", 1);
 		 	div.html(d.properties.Name + "<br/>" +
 		 			'<img src= "' + d.properties.ImageURL + '"' +
-					" height='50' width='auto' border='1'>")
-				.style("left", (d3.event.pageX) + "px")
-				.style("top", (d3.event.pageY + 25) + "px");
+					" height='100' width='auto' border='1'>")
+				.style("left", (d3.event.pageX - 75) + "px")
+				.style("top", (d3.event.pageY - 130) + "px");
 		})
 		.on('mouseout', function(d) {
 			div.transition()

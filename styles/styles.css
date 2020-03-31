@@ -5,7 +5,7 @@ body {
   padding: 1%;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
   color: #09511F;
-  background-color:#85C1E9; /* general page background color TBD */
+  background-color:#85C1E9;
 }
 
 #header1, #header2
@@ -32,8 +32,6 @@ div.tooltip {
 }
 
 .country:hover {
-    /*fill: red;*/
-    /*opacity: 0.3;*/
     fill-opacity: 1;
 }
 
@@ -50,12 +48,11 @@ div.tooltip {
 }
 
 #titlebar {
-  /*font-size: 50px;*/
   padding: 5px;
 }
 
 #flag_details {
-  background-color: lightgrey; /* tbd */
+  background-color: lightgrey;
 }
 
 svg {
@@ -94,7 +91,6 @@ svg {
 }
 
 .selected {
-  /*fill: #89a;*/
   fill-opacity: 1;
 }
 
