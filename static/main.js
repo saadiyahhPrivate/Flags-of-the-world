@@ -227,7 +227,7 @@ function updateHistograms()
         .attr("transform",
             "translate(" + hmargin.left + "," + hmargin.top + ")");
 
-    hsvg.selectAll(".bar")
+    hsvg.selectAll("text.bar")
           .data(color_data)
         .enter().append("rect")
           .attr("class", "bar")
@@ -237,7 +237,9 @@ function updateHistograms()
         .attr("height", function(d) { return hheight - y(d.count); })
         .attr("fill", function(d) {return d.color})
         .style("stroke", "black")
-        .style("stroke-width", 1);
+        .style("stroke-width", 1)
+        .append("text")
+        .text(d => d.count);
 
     hsvg.append("g")
         .attr("transform", "translate(0," + hheight + ")")
@@ -249,7 +251,8 @@ function updateHistograms()
 					.attr("transform", "rotate(-55)");
 
     hsvg.append("g")
-        .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y).tickValues(y.ticks()
+    .filter(tick => Number.isInteger(tick))).tickFormat(d3.format('d')));
 
     hsvg.append("text")
         .attr("transform", "rotate(-90)")
@@ -316,7 +319,8 @@ function updateHistograms()
       .attr("transform", "rotate(-55)");
 
     hsvg2.append("g")
-    .call(d3.axisLeft(y2));
+    .call(d3.axisLeft(y2).tickValues(y2.ticks()
+    .filter(tick => Number.isInteger(tick))).tickFormat(d3.format('d')));
 
     hsvg2.append("text")
         .attr("transform", "rotate(-90)")
