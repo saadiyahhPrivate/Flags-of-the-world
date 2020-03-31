@@ -44,25 +44,30 @@ function countrySelected()
 function updateFilter() {
 	// apply filters
 	var selected = mapdata;
+	var filterExists = false;
 
 	landmasses.forEach((landmassid, landmass) => {
 		var doc_element = document.getElementById(landmass);
 		if (!doc_element.checked) {
 			selected = selected.filter(d => d.properties.Landmass != landmassid)
+		} else {
+			filterExists = true;
 		}
 	})
+	// if no landmass selected, use the entire data to filter
 	if (selected.length == 0) selected = mapdata;
 
 	filters.forEach((filter) => {
 		var x = document.getElementById(filter);
 		if (document.getElementById(filter).checked) {
 			selected = selected.filter(d => d.properties[filter] != 0)
+			filterExists = true;
 		}
 	})
 
 	svg.selectAll('path')
 		.classed('selected', false)
-	if (selected.length != mapdata.length) {
+	if (filterExists) {
 		selected.forEach(d => {
 			svg.select('#'+d.properties.Name.split(' ').join(''))
 				.classed('selected', true)
